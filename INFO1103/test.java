@@ -1,6 +1,6 @@
 public class test{
     public static void main(String[] args){
-        System.out.println("Hello World");
-        System.out.println("Call me genius");
+      double a = Double.MAX_VALUE;
+      System.out.println( a > 600851475143/2); 
     }
 }
