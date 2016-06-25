@@ -9,7 +9,7 @@ public class Books{
     private boolean borrowed;
     private String dueDate;
 
-    public book (String title, String author, long isbn, int edtion, String publisher, int publishyear){
+    public book (String title, String author, String isbn, String edtion, String publisher, String publishyear){
         this.title = title;
         this.author = author;
         this.ISBN = isbn;
