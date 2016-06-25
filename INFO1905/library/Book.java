@@ -1,4 +1,4 @@
-public class Books{
+public class Book{
 
     private final String title;
     private final String author;
@@ -9,13 +9,13 @@ public class Books{
     private boolean borrowed;
     private String dueDate;
 
-    public book (String title, String author, String isbn, String edtion, String publisher, String publishyear){
+    public Book (String title, String author, String isbn, String edtion, String publisher, String publishyear){
         this.title = title;
         this.author = author;
         this.ISBN = isbn;
         this.edtion = edtion;
         this.publisher = publisher;
-        this.publishYear = publishYear
+        this.publishYear = publishyear;
     }
 
     //get method
@@ -33,7 +33,7 @@ public class Books{
     }
 
     public String getEdition(){
-        this.edtion;
+        return this.edtion;
     }
 
     public String getPublihser(){

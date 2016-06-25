@@ -1,4 +1,5 @@
 import java.util.*;
+import java.lang.*;
 
 public class Simulation{
 
@@ -27,20 +28,18 @@ public class Simulation{
 
     public static void add(String input){
         
-        String[] information = input.split(" ");
-        Arraylist<String> toAdd = new ArrayList<String>();
+        String[] data = input.split(" ");
+        ArrayList<String> toAdd = new ArrayList<String>();
         for ( int i = 0; i < 6; i++){
-            if ( i > information.length ){
+            if ( i > data.length ){
                 toAdd.add( "Unkown" );
             }else{
-                toAdd.add( information[i] );
+                toAdd.add( data[i] );
             }
         }
-        String informaton = toAdd.toArray();
         
-        Book newBook = new Book( information[0], information[1], information[2], information[3], information[4]
-                                 information[5] );
-        library.put( information[0], newBook);
+        Book newBook = new Book( toAdd.get(0), toAdd.get(1), toAdd.get(2), toAdd.get(3), toAdd.get(4), toAdd.get(5) );
+        library.put( data[0], newBook);
 
         System.out.println("Book added!");
     }
@@ -48,8 +47,8 @@ public class Simulation{
     public static void Edit( String input, String title ){
 
         Book editBook = library.get( title );
-        String updateInfo = input.split(" ");
-        switch ( uodateInfo[0] ){
+        String[] updateInfo = input.split(" ");
+        switch ( updateInfo[0] ){
             case "edtion":
                 editBook.setEdtion( updateInfo[1] );
                 break;
@@ -62,7 +61,7 @@ public class Simulation{
     public static void borrow(String title){
 
         Book borrowedBook = library.get( title );
-        if ( borrowedBook.getBorrowed() == true ){
+        if ( borrowedBook.getStatus() == true ){
             System.out.println("Sorry, the book were borrowed.");
         }else{
             borrowedBook.setBorrowed( true );
@@ -90,7 +89,7 @@ public class Simulation{
         //The purpose of wrtitting a more complex solution
         //is to practice with itterating map
         for ( Map.Entry< String, Book> b : library.entrySet() ){
-            if ( b.getBorrowed() == true ){
+            if ( b.getValue().getStatus() == true ){
                 borrowed++;
             }
         }
@@ -105,7 +104,7 @@ public class Simulation{
             String input = keyboard.nextLine();
             String[] command = input.split(" ");
             
-            switch ( command[0].toLower() ){
+            switch ( command[0].toLowerCase() ){
                 case "help":
                     help();
                     break;
@@ -114,12 +113,12 @@ public class Simulation{
                     System.out.print("following sequence");
                     System.out.println("Title,Author,ISBN,Edition,Publisher,Publiser Year");
                     String info = keyboard.nextLine();
-                    add( command[1], info);
+                    add( info );
                     break;
                 case "edit":
                     System.out.println( "Please enter which one you would like to edit,Edition or Publisher" );
-                    String input = keyboard.nextLIne();
-                    Edit( input , command[1] );
+                    String in = keyboard.nextLine();
+                    Edit( in , command[1] );
                     System.out.println("Book information has been updated");
                     break;
                 case "borrow":
