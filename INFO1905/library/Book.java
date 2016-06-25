@@ -2,10 +2,10 @@ public class Books{
 
     private final String title;
     private final String author;
-    private final long ISBN;
-    private int edtion;
+    private final String ISBN;
+    private String edtion;
     private String publisher;
-    private final int publishYear;
+    private final String publishYear;
     private boolean borrowed;
     private String dueDate;
 
@@ -28,11 +28,11 @@ public class Books{
         return this.author;
     }
 
-    public long getISBN(){
+    public String getISBN(){
         return this.ISBN;
     }
 
-    public int getEdition(){
+    public String getEdition(){
         this.edtion;
     }
 
@@ -54,7 +54,7 @@ public class Books{
 
     //set method
 
-    public void setEdtion(int edtion){
+    public void setEdtion(String edtion){
         this.edtion = edtion;
     }
 
