@@ -6,6 +6,8 @@ public class Books{
     private int edtion;
     private String publisher;
     private final int publishYear;
+    private boolean borrowed;
+    private String dueDate;
 
     public book (String title, String author, long isbn, int edtion, String publisher, int publishyear){
         this.title = title;
@@ -42,14 +44,30 @@ public class Books{
         return this.publishYear;
     }
 
+    public boolean getStatus(){
+        return this.borrowed;
+    }
+
+    public String getDueDate(){
+        return this.dueDate;
+    }
+
     //set method
 
     public void setEdtion(int edtion){
         this.edtion = edtion;
     }
-    
+
     public void setPublisher(String publisher){
         this.publisher = publisher;
+    }
+
+    public void setBorrowed( boolean status){
+       this.borrowed = status; 
+    }
+
+    public void setDueDate( String dueDate ){
+       this.dueDate = dueDate; 
     }
 
 }
