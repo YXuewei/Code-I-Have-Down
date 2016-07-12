@@ -1,0 +1,8 @@
+# Java
+*.class
+
+#C
+*.exe
+
+#VSCode
+.vscod
