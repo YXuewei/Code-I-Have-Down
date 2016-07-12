@@ -3,7 +3,7 @@
 #define MAXLINE 300
 #define LIMIT 80
 
-//int getLine( cahr s[], int limit);
+int getLine( char s[], int limit);
 
 int main(){
     char line[MAXLINE];
@@ -17,7 +17,7 @@ int main(){
             printf("The length is less than 80");
         }
         scanf( "%s", line);
-        prinf("\n");
+        printf("\n");
     }
 }
 
