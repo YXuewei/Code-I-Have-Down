@@ -5,4 +5,6 @@
 *.exe
 
 #VSCode
-.vscod
+.vscode/*.json
+.vscode/*.db
+.vscode/*.db-wal
