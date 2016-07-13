@@ -1,6 +1,6 @@
 # include <stdio.h>
 
-main(){
+int main(){
 
     char input;
     printf( "Now type in a character I will show you it's ASC-II code " );
