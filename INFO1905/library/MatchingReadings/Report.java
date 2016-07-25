@@ -1,4 +1,4 @@
-public class Reprt{
+public class Report{
     private int time;
     private int value;
 
