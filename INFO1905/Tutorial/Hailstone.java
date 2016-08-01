@@ -27,4 +27,5 @@ public class Hailstone{
 
         return list;
     }
+    
 }
