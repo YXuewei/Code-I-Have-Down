@@ -16,7 +16,7 @@ public class LinearSearchableArray<T extends Comparable<T>> extends SearchableAr
 	@Override
 	public T search(T target) {
 		
-		int len = this.length;
+		int len = this.data.length;
 		
 		for ( int i = 0; i < len ; i++){
 			if ( this.data[i].equals( target ) ){
