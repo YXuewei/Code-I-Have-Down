@@ -24,14 +24,14 @@ public class BinarySearchableArray<T extends Comparable<T>> extends SearchableAr
 	// 1 means did not find the target
 	public int BinarySearch( T target, int lowerBound, int upperBound ){
 		if ( lowerBound <= upperBound ){
-			int mid = ( lowerBound + upperBound ) / 2;
+			int mid = ( ( upperBound - lowerBound ) / 2 ) + lowerBound;
 			int result = this.data[ mid ].compareTo( target );
 			if ( result == 0 ){
 				return 0;
 			} else if ( result < 0 ){
 				return this.BinarySearch( target, mid + 1, upperBound );
 			}else{
-				return this.BinarySearch( target, lowerBound, upperBound - 1 );
+				return this.BinarySearch( target, lowerBound, mid - 1 );
 			}
 		}else{
 			return 1;
