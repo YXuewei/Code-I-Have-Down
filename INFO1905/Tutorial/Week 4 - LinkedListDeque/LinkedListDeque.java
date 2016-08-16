@@ -82,6 +82,8 @@ public class LinkedListDeque<E> implements Deque<E>{
         this.header.setNext( insertNode );
         insertNode.setNext( succ );
         insertNode.setPrv( this.header );
+
+        this.size += 1;
     }
 
     public void addLast( E element ){
@@ -90,6 +92,8 @@ public class LinkedListDeque<E> implements Deque<E>{
         lead.setNext( insertNode );
         insertNode.setNext( this.trailer );
         insertNode.setPrv( lead );
+
+        this.size += 1;
     }
 
     public E pollFirst(){
@@ -100,6 +104,8 @@ public class LinkedListDeque<E> implements Deque<E>{
         returnValue = remove.getElement();
         first.setPrv( this.header );
         this.header.setNext( first );
+
+        this.size -= 1;
 
         return returnValue;
     }
@@ -112,6 +118,8 @@ public class LinkedListDeque<E> implements Deque<E>{
         returnValue = remove.getElement();
         last.setNext( this.trailer );
         this.trailer.setPrv( last );
+
+        this.size -= 1;
 
         return returnValue;
     }
