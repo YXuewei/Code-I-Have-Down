@@ -6,7 +6,7 @@ public class LinkedListDeque<E> implements Deque<E>{
         private Node<E> prv;
         private Node<E> next;
 
-        public Node<E>( E element, Node<E> prv, Node<E> next ){
+        public Node( E element, Node<E> prv, Node<E> next ){
             this.element = element;
             this.prv = prv;
             this.next = next;
@@ -39,9 +39,12 @@ public class LinkedListDeque<E> implements Deque<E>{
 
     private int size;
     
-    public LinkedListDeque<E>(){
-        Node<E> header = new Node<E>( null, null, null );
-        Node<E> trailer = new Node<E>( null, header, null );
+    private Node<E> header;
+    private Node<E> trailer;
+
+    public LinkedListDeque(){
+        header = new Node<E>( null, null, null );
+        trailer = new Node<E>( null, header, null );
         int size = 0;
     }
 
@@ -81,7 +84,7 @@ public class LinkedListDeque<E> implements Deque<E>{
         insertNode.setPrv( this.header );
     }
 
-    public addLast( E element ){
+    public void addLast( E element ){
         Node<E> insertNode = new Node<>( element, null, null );
         Node<E> lead = this.trailer.getPrv();
         lead.setNext( insertNode );
