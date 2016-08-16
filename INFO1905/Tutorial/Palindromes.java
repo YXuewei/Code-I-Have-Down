@@ -1,22 +1,29 @@
 import java.util.*;
 
 public class Palindromes{
+    
     public static boolean isPalindrome( String word ){
-        Stack reversed = new Stack();
-        Queue origin = new Queue();
+        Stack<Character> reversed = new Stack<>();
         int len = word.length();
-        word = word.toLowerCase();
+       // word = word.toLowerCase();
 
         for ( int i = 0; i < len; i++ ){
-            origin.add( word.charAt( i ) );
+            reversed.push( word.charAt( i ) );
         }
-
         for ( int i = 0; i < len; i++ ){
-            if ( origin.remove().equals( reversed.pop() ) != false ){
+            char compare = reversed.pop().charValue();
+            if ( word.charAt( i ) != compare ){
                 return false;
             }
         }
 
         return true;
+    }
+
+    public static boolean isPalindromeSentence( String sentence ){
+        
+        sentence = sentence.toLowerCase();
+        sentence = sentence.replaceAll( "[^A-Za-z]","" );
+        return isPalindrome( sentence );
     }
 }
