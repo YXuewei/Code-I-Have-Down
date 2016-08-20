@@ -3,7 +3,6 @@ import java.util.*;
 public class ReverseSentence{
     public String reveseWords( String s ){
         s = s.trim();
-        s = s.replaceAll( "[ ]{3,}", "" );
         s = s.replaceAll( "[ ]{2,}"," ");
         String[] array = s.split( " " );
 
