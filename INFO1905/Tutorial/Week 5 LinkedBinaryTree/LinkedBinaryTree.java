@@ -370,6 +370,7 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 	private int countLeaves(Position<E> p) {
 		Node<E> node = validate(p);
 		if ((node.getLeft() == null) && (node.getRight() == null)) {
+			return 0;
 			// TODO: base case here, for node without children
 		} else {
 			// recursive cases, depending on which child nodes exist
@@ -377,8 +378,10 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 				// there is only a left child
 				return countLeaves(node.getLeft());
 			} else if (node.getLeft() == null) {
+				return countLeaves( node.getRight() );
 				// TODO: fill the code where there is only a right child
 			} else {
+				return 0;
 				// TODO: fill in code when two children
 			}
 		}
