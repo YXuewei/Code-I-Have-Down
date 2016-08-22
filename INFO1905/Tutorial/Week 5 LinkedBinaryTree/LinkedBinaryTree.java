@@ -29,6 +29,8 @@
  * @author Roberto Tamassia
  * @author Michael H. Goldwasser
  */
+import java.util.*;
+
 public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 
 	// ---------------- nested Node class ----------------
@@ -370,8 +372,7 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 	private int countLeaves(Position<E> p) {
 		Node<E> node = validate(p);
 		if ((node.getLeft() == null) && (node.getRight() == null)) {
-			return 0;
-			// TODO: base case here, for node without children
+			return 1;
 		} else {
 			// recursive cases, depending on which child nodes exist
 			if (node.getRight() == null) {
@@ -379,10 +380,8 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 				return countLeaves(node.getLeft());
 			} else if (node.getLeft() == null) {
 				return countLeaves( node.getRight() );
-				// TODO: fill the code where there is only a right child
 			} else {
-				return 0;
-				// TODO: fill in code when two children
+				return countLeaves( node.getLeft() ) + countLeaves( node.getRight() );
 			}
 		}
 	}
@@ -390,15 +389,25 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 	// ----------- TUTORIAL exercise 2 -----------
 	/** Returns true if the tree is proper, false otherwise */
 	public boolean isProper() {
-		// TODO: implement this
-		return false;
+		if ( this.size() != 0 ){
+			return isProper( this.root );
+		}else{
+			return true;
+		}
 	}
 
 	// ----------- TUTORIAL exercise 3 -----------
 	/** Returns a mirrored copy of the tree */
 	public LinkedBinaryTree<E> mirror() {
 		LinkedBinaryTree<E> reversed = new LinkedBinaryTree<E>();
-		// TODO: implement this
+		Node<E> current = this.root;
+		Position<E> currentPosition = this.root();
+		reversed.addRoot( current.getElement() );
+
+		Stack< Node<E> > stack = new Stack<>();
+		
+		while( )
+
 		return reversed;
 	}
 
@@ -406,6 +415,22 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 	/** Reverses the tree */
 	public void reverseMe() {
 		// TODO: implement this
+	}
+
+	public boolean isProper( Node<E> root ){
+		if ( root == null ){
+			return false;
+		}else{
+			if ( root.getRight() == null && root.getLeft() == null ){
+				return true;
+			}else{
+				boolean condition = root.getRight() != null && root.getLeft() != null;
+				if ( condition ){
+					return isProper( root.getLeft() ) && isProper( root.getRight() );
+				}
+				return false;
+			}
+		}
 	}
 
 } // ----------- end of LinkedBinaryTree class -----------
