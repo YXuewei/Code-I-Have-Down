@@ -400,9 +400,9 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 	/** Returns a mirrored copy of the tree */
 	public LinkedBinaryTree<E> mirror() {
 		LinkedBinaryTree<E> reversed = new LinkedBinaryTree<E>();
-		Node<E> current = validate( this.root() );
-		Node<E> temp;
-		reversed.addRoot( this.root.getElement() );
+		Position<E> current = validate( this.root() );
+		Position<E> temp;
+	//	reversed.addRoot( this.root.getElement() );
 
 		if ( this.root == null ){
 			return reversed;
@@ -410,19 +410,19 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 		//Position<E> currentPosition = this.root();
 		int targetSize = this.size();
 
-		Stack< Node<E> > stack = new Stack<>();
-		stack.push( current );
+		LinkedList< Position<E> >  quene = new LinkedList<>();
+		quene.add( current );
 	
-		while( reversed.size() != targetSize ){
-			current = stack.pop();
-			temp = current.getLeft();
-			current.setRight( current.getLeft() );
-			current.setLeft( temp );
-			if ( current.getRight() != null ){
-				stack.push( current.getRight() );
+		while( quene.size() != 0 ){
+			current = quene.removeFirst();
+			temp = left( current );
+			addRight( current, validate( temp).getElement() );
+			addLeft( current, validate( right(current) ).getElement() );
+			if ( right( current ) != null ){
+				quene.add( right( current ) );
 			}
-			if ( current.getLeft() != null ){
-				stack.push( current.getLeft() );
+			if ( left( current ) != null ){
+				quene.add( left( current ) );
 			}
 		}
 
