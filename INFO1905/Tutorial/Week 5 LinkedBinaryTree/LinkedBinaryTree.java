@@ -400,7 +400,39 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 	/** Returns a mirrored copy of the tree */
 	public LinkedBinaryTree<E> mirror() {
 		LinkedBinaryTree<E> reversed = new LinkedBinaryTree<E>();
+		int size = this.size();
 		
+		if ( size == 0 ){
+			return reversed;
+		}
+
+		Stack< Node<E> > stack = new Stack<>();
+		Stack< Position<E> > poStack = new Stack<>();
+
+		reversed.addRoot( this.root.getElement() );	
+		stack.push( this.root );
+		poStack.push( reversed.root() );
+
+		Node<E> cur;
+		Position<E> curPo;
+
+		while( !stack.isEmpty() ){
+			cur = stack.pop();
+			curPo = poStack.pop();
+
+			if ( cur.getLeft() != null ){
+				stack.push( cur.getLeft() );
+				reversed.addRight( curPo, cur.getLeft().getElement() );
+				poStack.push( right( curPo ) );
+			}
+
+			if ( cur.getRight() != null ){
+				stack.push( cur.getRight() );
+				reversed.addLeft( curPo, cur.getRight().getElement() );
+				poStack.push( left( curPo ) );
+			}
+		}
+
 		return reversed;
 	}
 
