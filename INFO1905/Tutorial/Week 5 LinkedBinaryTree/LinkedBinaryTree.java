@@ -93,6 +93,14 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 		public void setRight(Node<E> rightChild) {
 			right = rightChild;
 		}
+
+		public void removeLeft(){
+			left = null;
+		}
+
+		public void removeRight(){
+			right = null;
+		}
 	} // ----------- end of nested Node class -----------
 
 	/** Factory function to create a new node storing element e. */
@@ -439,7 +447,31 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 	// ----------- TUTORIAL exercise 4 -----------
 	/** Reverses the tree */
 	public void reverseMe() {
-		// TODO: implement this
+		if ( this.size() == 0 ){
+			return;
+		}
+
+		Stack< Node<E> > stack = new Stack<>();
+		Node<E> temp = null;
+		Node<E> cur;
+
+		stack.push( this.root );
+		
+		while( !stack.isEmpty() ){
+			cur = stack.pop();
+
+			temp = cur.getRight();
+			cur.setRight( cur.getLeft() );
+			cur.setLeft( temp );
+
+			if ( cur.getRight() != null ){
+				stack.push( cur.getRight() );
+			}
+
+			if ( cur.getLeft() != null ){
+				stack.push( cur.getLeft() );
+			}
+		}
 	}
 
 	public boolean isProper( Node<E> root ){
