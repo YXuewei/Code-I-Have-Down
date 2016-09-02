@@ -3,8 +3,11 @@ import java.lang.*;
 
 public class Test{
     public static void main( String[] args){
-       String str = "  a   b c    d";
-       str = str.replaceAll( "[ ]{2,}","");
-       System.out.println( str );
+       int[] a = { 0, 1, 2, 3, 4, 5};
+       int low = 0;
+       while( low < a.length ){
+           int p = a[ low ++ ];
+           System.out.println( p );
+       }
     }
 }
