@@ -490,4 +490,26 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 		}
 	}
 
+	public Position<E> getNextPosition( Position<E> p ){
+		validate( p );
+		Position<E> current = p;
+		if ( right( p ) != null ){
+			current = right( p );
+			while ( left( current ) != null ){
+				current = left( current );
+			}
+			return current;
+		}
+
+		if ( right( parent( p ) ) == p ){
+			current = parent( p );
+			while ( right( parent( current ) ) == p ){
+				current = parent( p );
+			}
+			return current;
+		}
+
+		return parent( p );
+	}
+
 } // ----------- end of LinkedBinaryTree class -----------
