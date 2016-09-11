@@ -114,9 +114,9 @@ public class BstSimpleSortedMap implements SimpleSortedMap {
 		// base case: the key wasn't in the subtree
 		if(subtreeRoot == null) {
 			// we have reached a null subtree, where k should be
-			//TODO: create a new entry
-			//TODO: increment the size variable
-			//TODO: return the new entry
+			// create a new entry
+			//increment the size variable
+			//return the new entry
 			MySimpleEntry newEntry = new MySimpleEntry( k, v );
 			size++;
 			return newEntry;
@@ -124,10 +124,10 @@ public class BstSimpleSortedMap implements SimpleSortedMap {
 
 		// base case: k matches the one in the current entry
 		if(k.compareTo(subtreeRoot.getKey()) == 0) {
-			// TODO: create a new entry
-			// TODO: attach the left child of the current entry to it			
-			// TODO: attach the right child of the current entry to it			
-			// TODO: return the new subtree
+			// create a new entry
+			// attach the left child of the current entry to it			
+			// attach the right child of the current entry to it			
+			// return the new subtree
 			MySimpleEntry newEntry = new MySimpleEntry( k, v );
 			//newEntry.setParent( subtreeRoot.getParent() );
 			attachLeft( newEntry, subtreeRoot.getLeft() );
@@ -136,9 +136,9 @@ public class BstSimpleSortedMap implements SimpleSortedMap {
 		}
 		// recursive case: k < the current entry
 		else if(k.compareTo(subtreeRoot.getKey()) < 0) {
-			// TODO: get the subtree resulting from recursing left
-			// TODO: attach that subtree to the current entry
-			// TODO: return the modified entry
+			// get the subtree resulting from recursing left
+			// attach that subtree to the current entry
+			// return the modified entry
 			MySimpleEntry updated =  put( k, v, subtreeRoot.getLeft() );
 			attachLeft( subtreeRoot, updated );
 			attachRight( subtreeRoot, updated );
@@ -146,9 +146,9 @@ public class BstSimpleSortedMap implements SimpleSortedMap {
 		}
 		// recursive case: k > the current entry
 		else {
-			// TODO: get the subtree resulting from recursing right
-			// TODO: attach that subtree to the current entry
-			// TODO: return the modified entry
+			// get the subtree resulting from recursing right
+			// attach that subtree to the current entry
+			// return the modified entry
 			MySimpleEntry updated =  put( k, v, subtreeRoot.getRight() );
 			attachLeft( subtreeRoot, updated );
 			attachRight( subtreeRoot, updated );
