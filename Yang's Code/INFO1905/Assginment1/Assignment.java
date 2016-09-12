@@ -6,14 +6,14 @@ public class Assignment implements Calendar {
 	
 	// The default constructor for the class should be public
 	// We will use this when we test your code!
-	Hashtable< Date, ArrayList<MyAppointment> > byDate;
-	Hashtable< String, ArrayList<MyAppointment> > byLocation;
-	LinkedList< MyAppointment > byAppointment;
+	Hashtable< Date, ArrayList< Appointment> > byDate;
+	Hashtable< String, ArrayList< Appointment > > byLocation;
+	LinkedList< Appointment > byAppointment;
 	
 	public Assignment() {
-		byDate = new Hashtable<Date,ArrayList<MyAppointment>>();
-		byLocation = new Hashtable< String,ArrayList<MyAppointment>>();
-		byAppointment = new LinkedList< MyAppointment >();
+		byDate = new Hashtable<Date,ArrayList< Appointment >>();
+		byLocation = new Hashtable< String,ArrayList< Appointment >>();
+		byAppointment = new LinkedList< Appointment >();
 	}
 
 	public static class MyAppointment implements Appointment{
@@ -70,13 +70,15 @@ public class Assignment implements Calendar {
 		if ( when == null || location == null ){
 			throw new IllegalArgumentException("One or more argument is null");
 		}
-		ArrayList< MyAppointment > temp = byDate.get( when );
-		for ( MyAppointment i : temp ){
-			if ( i.getLocation().equals( location ) ){
-				return i;
+		
+		if ( byDate.containsKey( when ) ){
+			ArrayList< Appointment > temp = byDate.get( when );
+			for ( Appointment i : temp ){
+				if ( i.getLocation().equals( location ) ){
+					return i;
+				}
 			}
 		}
-
 		return null;
 	}
 
@@ -89,12 +91,12 @@ public class Assignment implements Calendar {
 		MyAppointment temp = new MyAppointment( description, when, location );
 		byAppointment.add( temp );	
 		if ( !byDate.containsKey( when ) ){
-			ArrayList< MyAppointment > list = new ArrayList<>();
+			ArrayList< Appointment > list = new ArrayList<>();
 			list.add( temp );
 			byDate.put( when, list );
 			byLocation.put ( location, list );
 		}else{
-			ArrayList< MyAppointment > list = byDate.get( when );
+			ArrayList< Appointment > list = byDate.get( when );
 			list.add( temp );
 		}
 	}
@@ -102,6 +104,9 @@ public class Assignment implements Calendar {
 	@Override
 	public void remove(Appointment appointment) {
 		// TODO Implement this! (then remove this TODO comment)
+		if ( appointment == null ){
+			throw new IllegalArgumentException("Appointment is null");
+		}
 		Date date = appointment.getStartTime();
 		String location = appointment.getLocation();
 		byAppointment.remove( appointment );
