@@ -69,7 +69,7 @@ public class Assignment implements Calendar {
 			Iterator< Date > itr = keys.iterator();
 			while( itr.hasNext() ){
 				Date d = itr.next();
-				if ( d.equals( when ) || d.after( when ) );
+				if ( d.after( when ) );
 					if( byDate.get( d ).size() > 0 ){
 						return byDate.get( d ).get( 0 );
 					}
