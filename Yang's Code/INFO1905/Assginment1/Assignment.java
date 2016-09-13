@@ -81,6 +81,13 @@ public class Assignment implements Calendar {
 					return i;
 				}
 			}
+		}else if ( byLocation.containsKey( location ) ){
+				ArrayList< Appointment> temp = byLocation.get( location );
+				for ( Appointment i : temp ){
+					if ( i.getStartTime().equals( when ) || i.getStartTime().after( when ) ){
+						return i;
+					}
+				}
 		}
 		return null;
 	}
@@ -89,10 +96,11 @@ public class Assignment implements Calendar {
 	public void add(String description, Date when, String location) {
 		if ( description == null || when == null || location == null ){
 			throw new IllegalArgumentException( "One or argument is null" );
-		}	
+		}
 		
 		MyAppointment temp = new MyAppointment( description, when, location );
 		byAppointment.add( temp );	
+		//add to map associated by date
 		if ( !byDate.containsKey( when ) ){
 			ArrayList< Appointment > list = new ArrayList<>();
 			list.add( temp );
@@ -101,7 +109,7 @@ public class Assignment implements Calendar {
 			ArrayList< Appointment > list = byDate.get( when );
 			list.add( temp );
 		}
-
+		// add to map associated by location
 		if( !byLocation.containsKey( location ) ){
 			ArrayList< Appointment > list2 = new ArrayList<>();
 			list2.add( temp );
