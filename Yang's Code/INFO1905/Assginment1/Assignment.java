@@ -47,7 +47,10 @@ public class Assignment implements Calendar {
 		if ( location == null ){
 			throw new IllegalArgumentException("location was null");
 		}
-		List< Appointment > list = byLocation.get( location );
+		ArrayList< Appointment > list = byLocation.get( location );
+		if ( list == null ){
+			list = new ArrayList< Appointment >();
+		}
 		return list;
 	}
 
@@ -94,10 +97,18 @@ public class Assignment implements Calendar {
 			ArrayList< Appointment > list = new ArrayList<>();
 			list.add( temp );
 			byDate.put( when, list );
-			byLocation.put ( location, list );
 		}else{
 			ArrayList< Appointment > list = byDate.get( when );
 			list.add( temp );
+		}
+
+		if( !byLocation.containsKey( location ) ){
+			ArrayList< Appointment > list2 = new ArrayList<>();
+			list2.add( temp );
+			byLocation.put( location, list2 );
+		}else{
+			ArrayList< Appointment> list2 = byLocation.get( location );
+			list2.add( temp );
 		}
 	}
 
@@ -110,7 +121,7 @@ public class Assignment implements Calendar {
 		Date date = appointment.getStartTime();
 		String location = appointment.getLocation();
 		byAppointment.remove( appointment );
-		byDate.remove( date );
-		byLocation.remove( location );
+		byDate.get( date ).remove( appointment );
+		byLocation.get( location ).remove( appointment );
 	}
 }
