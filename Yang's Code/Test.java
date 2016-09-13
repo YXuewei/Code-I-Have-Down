@@ -17,7 +17,7 @@ public class Test{
 
         list2.add( " Suits");
 
-        System.out.println( ht2.get(1).size() );
+        System.out.println( ht2.get(1).get( 0 ) );
         
     }
 }
