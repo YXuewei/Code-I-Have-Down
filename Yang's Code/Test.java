@@ -3,10 +3,21 @@ import java.lang.*;
 
 public class Test{
     public static void main( String[] args){
-        Hashtable< Date, String> a = new Hashtable< Date, String>();
-        Date today = new Date( 2016, 12, 20 );
-        String location = "Sydney";
-        a.put( today, location );
-        System.out.println( a.size() );
+        Hashtable< Integer, ArrayList<String> > ht = new Hashtable< Integer, ArrayList<String> >();
+        Hashtable< Integer, ArrayList<String> > ht2 = new Hashtable< Integer, ArrayList<String> >();
+        
+       ArrayList<String> list = new ArrayList<String>();
+        list.add( "Suit"); 
+        ht.put( 1, list);
+        ht2.put(1,list);
+        System.out.println( ht2.get(1).size());
+
+        ArrayList<String> list2 = new ArrayList<String>();
+        list2 = ht.get( 1 );
+
+        list2.add( " Suits");
+
+        System.out.println( ht2.get(1).size() );
+        
     }
 }
