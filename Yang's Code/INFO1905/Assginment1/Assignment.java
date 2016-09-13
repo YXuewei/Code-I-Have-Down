@@ -61,10 +61,21 @@ public class Assignment implements Calendar {
 		}
 		// TODO Implement this! (then remove this TODO comment)
 		if ( byDate.containsKey( when ) ){
-			return byDate.get( when ).get( 0 );
+			if ( byDate.get( when ).size() > 0 ){
+				return byDate.get( when ).get( 0 );
+			}
 		}else{
-			return null;
+			Set< Date > keys = byDate.keySet();
+			Iterator< Date > itr = keys.iterator();
+			while( itr.hasNext() ){
+				Date d = itr.next();
+				if ( d.equals( when ) || d.after( when ) );
+					if( byDate.get( d ).size() > 0 ){
+						return byDate.get( d ).get( 0 );
+					}
+			}
 		}
+		return null;
 	}
 
 	@Override
@@ -74,20 +85,21 @@ public class Assignment implements Calendar {
 			throw new IllegalArgumentException("One or more argument is null");
 		}
 		
-		if ( byDate.containsKey( when ) ){
+		/*if ( byDate.containsKey( when ) ){
 			ArrayList< Appointment > temp = byDate.get( when );
 			for ( Appointment i : temp ){
 				if ( i.getLocation().equals( location ) ){
 					return i;
 				}
 			}
-		}else if ( byLocation.containsKey( location ) ){
-				ArrayList< Appointment> temp = byLocation.get( location );
-				for ( Appointment i : temp ){
-					if ( i.getStartTime().equals( when ) || i.getStartTime().after( when ) ){
-						return i;
-					}
+		}else */
+		if ( byLocation.containsKey( location ) ){
+			ArrayList< Appointment> temp = byLocation.get( location );
+			for ( Appointment i : temp ){
+				if ( i.getStartTime().equals( when ) || i.getStartTime().after( when ) ){
+					return i;
 				}
+			}
 		}
 		return null;
 	}
