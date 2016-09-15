@@ -92,4 +92,20 @@ public class Assignment1Test {
         Appointment app = temp.getNextAppointment( c );
         assertEquals( "A",app.getDescription() );
     }
+
+    @Test
+    public void getAppointment_AfterLast(){
+        Date a = new Date( 2016, 9, 03 );
+        Date b = new Date( 2016, 9, 04 );
+        Date c = new Date( 2016,9, 05 );
+
+        String l1 = "SIT117";
+        String l2 = "SIT118";
+
+        Assignment temp = new Assignment();
+        temp.add( "A",a,l1);
+        temp.add( "B", b, l2);
+
+        assertEquals( null, temp.getNextAppointment(c ) );
+    }
 }
