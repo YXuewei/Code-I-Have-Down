@@ -66,13 +66,18 @@ public class Assignment implements Calendar {
 			}
 		}else{
 			Set< Date > keys = byDate.keySet();
-			Iterator< Date > itr = keys.iterator();
-			while( itr.hasNext() ){
-				Date d = itr.next();
-				if ( d.after( when ) );
+			List< Date > keyList = new ArrayList( keys );
+			Collections.sort( keyList );
+			//Iterator< Date > itr = keys.iterator();
+			//while( itr.hasNext() ){
+			for ( int i = 0; i < keyList.size(); i ++ ){
+				//Date d = itr.next();
+				Date d = keyList.get( i );
+				if ( d.after( when ) ){;
 					if( byDate.get( d ).size() > 0 ){
 						return byDate.get( d ).get( 0 );
 					}
+				}
 			}
 		}
 		return null;
