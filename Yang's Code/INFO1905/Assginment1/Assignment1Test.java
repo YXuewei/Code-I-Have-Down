@@ -155,4 +155,17 @@ public class Assignment1Test {
 
         assertEquals( "B", temp.getNextAppointment( b, l1 ).getDescription()  );
     }
+
+    @Test
+    public void removeNonExist(){
+        Date a = new Date( 2016, 9, 05);
+        String l1 = "SIT118";
+        Assignment temp = new Assignment();
+        temp.add( "A", a, l1);
+        Appointment app = temp.getNextAppointment( a );
+
+        temp.remove( app );
+        temp.remove( app );
+        pass();
+    }
 }
