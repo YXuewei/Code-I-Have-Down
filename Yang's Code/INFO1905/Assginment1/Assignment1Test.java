@@ -76,4 +76,20 @@ public class Assignment1Test {
         assertEquals("SIT118", temp.getNextAppointment( b,l2 ).getLocation() );
         assertEquals("B", temp.getNextAppointment( b,l2 ).getDescription() );
     }
+
+    @Test
+    public void getAppointment(){
+        Date a = new Date( 2016, 9, 03);
+        Date b = new Date( 2016, 9, 04);
+        Date c = new Date( 2016, 9, 02 );
+
+        String l1 = "SIT117";
+
+        Assignment temp = new Assignment();
+        temp.add( "B",b, l1 );
+        temp.add("A", a, l1 );
+
+        Appointment app = temp.getNextAppointment( c );
+        assertEquals( "A",app.getDescription() );
+    }
 }
