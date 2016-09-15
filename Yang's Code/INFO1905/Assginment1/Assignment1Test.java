@@ -108,4 +108,51 @@ public class Assignment1Test {
 
         assertEquals( null, temp.getNextAppointment(c ) );
     }
+
+    @Test
+    public void removeTest(){
+        Date a = new Date( 2016, 9, 05 );
+        Date b = new Date( 2016, 9, 06 );
+        Date c = new Date( 2016, 9, 07 );
+        Date d = new Date( 2016, 9, 12 );
+
+        String l1 = "SIT115";
+        String l2 = "SIT116";
+        String l3 = "SIT117";
+        String l4 = "SIT118";
+
+        Assignment temp = new Assignment();
+        temp.add( "A", a, l1 );
+        temp.add( "B", b, l2 );
+        temp.add( "C", c, l3 );
+        temp.add( "D", a, l2 );
+
+        Appointment app = temp.getNextAppointment( a );
+        temp.remove( app );
+        app = temp.getNextAppointment( a, l2 );
+        temp.remove( app );
+        app = temp.getNextAppointment( b, l2);
+        temp.remove( app );
+        app = temp.getNextAppointment( c, l3 );
+        temp.remove( app );
+
+        assertEquals( null, temp.getNextAppointment( c, l3 ) );
+    }
+
+    @Test
+    public void removeTest_AddUnSorted(){
+        Date a = new Date( 2016, 9, 06 );
+        Date b = new Date( 2016, 9, 07 );
+        Date c = new Date( 2016, 9, 5 );
+
+        String l1 = "SIT115";
+
+        Assignment temp = new Assignment();
+        temp.add( "B", b, l1 );
+        temp.add( "A", a, l1 );
+        Appointment app = temp.getNextAppointment( c, l1 );
+        temp.remove( app );
+
+        assertEquals( "B", temp.getNextAppointment( b, l1 ).getDescription()  );
+    }
 }
