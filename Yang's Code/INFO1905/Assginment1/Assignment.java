@@ -8,12 +8,12 @@ public class Assignment implements Calendar {
 	// We will use this when we test your code!
 	Hashtable< Date, ArrayList< Appointment> > byDate;
 	Hashtable< String, ArrayList< Appointment > > byLocation;
-	LinkedList< Appointment > byAppointment;
+	//LinkedList< Appointment > byAppointment;
 	
 	public Assignment() {
 		byDate = new Hashtable<Date,ArrayList< Appointment >>();
 		byLocation = new Hashtable< String,ArrayList< Appointment >>();
-		byAppointment = new LinkedList< Appointment >();
+		//byAppointment = new LinkedList< Appointment >();
 	}
 
 	public static class MyAppointment implements Appointment{
@@ -73,7 +73,7 @@ public class Assignment implements Calendar {
 			for ( int i = 0; i < keyList.size(); i ++ ){
 				//Date d = itr.next();
 				Date d = keyList.get( i );
-				if ( d.after( when ) ){;
+				if ( d.after( when ) ){
 					if( byDate.get( d ).size() > 0 ){
 						return byDate.get( d ).get( 0 );
 					}
@@ -90,21 +90,44 @@ public class Assignment implements Calendar {
 			throw new IllegalArgumentException("One or more argument is null");
 		}
 		
-		/*if ( byDate.containsKey( when ) ){
+		if ( byDate.containsKey( when ) ){
 			ArrayList< Appointment > temp = byDate.get( when );
 			for ( Appointment i : temp ){
 				if ( i.getLocation().equals( location ) ){
 					return i;
 				}
 			}
-		}else */
-		if ( byLocation.containsKey( location ) ){
+		}else if ( byLocation.containsKey( location ) ){
 			ArrayList< Appointment> temp = byLocation.get( location );
-			for ( Appointment i : temp ){
+			Hashtable< Date, ArrayList<Appointment> > ht = new Hashtable< Date, ArrayList<Appointment> >();
+			for ( int i = 0; i < temp.size(); i++ ){
+				if ( ht.containsKey( temp.get( i ).getStartTime(  ) ) ){
+					ArrayList< Appointment > list = ht.get( temp.get(i).getStartTime());
+					list.add( temp.get( i ) );
+				}else{
+					ArrayList< Appointment > list = new ArrayList<>();
+					list.add(temp.get(i));
+					ht.put( temp.get( i ).getStartTime(), list );
+				}
+			}
+
+			Set<Date> keys = ht.keySet();
+			List<Date> keyList = new ArrayList( keys );
+			Collections.sort( keyList );
+			
+			for ( int i = 0; i < temp.size(); i++ ){
+				Date d = keyList.get( i );
+				if ( d.after( when ) ){
+					return ht.get( d ).get(0);
+				}
+			}
+			
+			
+			/*for ( Appointment i : temp ){
 				if ( i.getStartTime().equals( when ) || i.getStartTime().after( when ) ){
 					return i;
 				}
-			}
+			}*/
 		}
 		return null;
 	}
@@ -116,7 +139,7 @@ public class Assignment implements Calendar {
 		}
 		
 		MyAppointment temp = new MyAppointment( description, when, location );
-		byAppointment.add( temp );	
+		//byAppointment.add( temp );	
 		//add to map associated by date
 		if ( !byDate.containsKey( when ) ){
 			ArrayList< Appointment > list = new ArrayList<>();
@@ -145,8 +168,12 @@ public class Assignment implements Calendar {
 		}
 		Date date = appointment.getStartTime();
 		String location = appointment.getLocation();
-		byAppointment.remove( appointment );
+		if ( !byDate.containsKey( date ) || !byLocation.containsKey( location ) ){
+			return;
+		}else{
+		//byAppointment.remove( appointment );
 		byDate.get( date ).remove( appointment );
 		byLocation.get( location ).remove( appointment );
+		}
 	}
 }
