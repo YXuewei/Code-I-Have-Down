@@ -6,14 +6,12 @@ public class Assignment implements Calendar {
 	
 	// The default constructor for the class should be public
 	// We will use this when we test your code!
-	Hashtable< Date, ArrayList< Appointment> > byDate;
-	Hashtable< String, ArrayList< Appointment > > byLocation;
-	//LinkedList< Appointment > byAppointment;
-	
+	HashMap< Date, ArrayList< Appointment> > byDate;
+	HashMap< String, ArrayList< Appointment > > byLocation;
+
 	public Assignment() {
-		byDate = new Hashtable<Date,ArrayList< Appointment >>();
-		byLocation = new Hashtable< String,ArrayList< Appointment >>();
-		//byAppointment = new LinkedList< Appointment >();
+		byDate = new HashMap<Date,ArrayList< Appointment >>();
+		byLocation = new HashMap< String,ArrayList< Appointment >>();
 	}
 
 	public static class MyAppointment implements Appointment{
@@ -43,7 +41,6 @@ public class Assignment implements Calendar {
 
 	@Override
 	public List<Appointment> getAppointments(String location) {
-		// TODO Implement this! (then remove this TODO comment)
 		if ( location == null ){
 			throw new IllegalArgumentException("location was null");
 		}
@@ -59,19 +56,18 @@ public class Assignment implements Calendar {
 		if(when == null) {
 			throw new IllegalArgumentException("time was null");
 		}
-		// TODO Implement this! (then remove this TODO comment)
+		// check if "when" is found if not, sort date then iterate
 		if ( byDate.containsKey( when ) ){
 			if ( byDate.get( when ).size() > 0 ){
 				return byDate.get( when ).get( 0 );
 			}
+		// sort first then iterate
 		}else{
 			Set< Date > keys = byDate.keySet();
 			List< Date > keyList = new ArrayList( keys );
 			Collections.sort( keyList );
-			//Iterator< Date > itr = keys.iterator();
-			//while( itr.hasNext() ){
+	
 			for ( int i = 0; i < keyList.size(); i ++ ){
-				//Date d = itr.next();
 				Date d = keyList.get( i );
 				if ( d.after( when ) ){
 					if( byDate.get( d ).size() > 0 ){
@@ -85,11 +81,10 @@ public class Assignment implements Calendar {
 
 	@Override
 	public Appointment getNextAppointment(Date when, String location) {
-		// TODO Implement this! (then remove this TODO comment)
 		if ( when == null || location == null ){
 			throw new IllegalArgumentException("One or more argument is null");
 		}
-		
+		//attempt to search by date first
 		if ( byDate.containsKey( when ) ){
 			ArrayList< Appointment > temp = byDate.get( when );
 			for ( Appointment i : temp ){
@@ -97,20 +92,27 @@ public class Assignment implements Calendar {
 					return i;
 				}
 			}
-		}else if ( byLocation.containsKey( location ) ){
+		}
+		// didn't find any appointment in geiven date so start to look at location
+		// if location was found, get all dates then sort so can get very 
+		//first appointment after "when"
+		if ( byLocation.containsKey( location ) ){
 			ArrayList< Appointment> temp = byLocation.get( location );
-			Hashtable< Date, ArrayList<Appointment> > ht = new Hashtable< Date, ArrayList<Appointment> >();
+			HashMap< Date, ArrayList<Appointment> > ht = new HashMap< Date, ArrayList<Appointment> >();
+		
 			for ( int i = 0; i < temp.size(); i++ ){
-				if ( ht.containsKey( temp.get( i ).getStartTime(  ) ) ){
-					ArrayList< Appointment > list = ht.get( temp.get(i).getStartTime());
-					list.add( temp.get( i ) );
+				Appointment app = temp.get( i );
+				if ( ht.containsKey( app.getStartTime() ) ){
+					ArrayList< Appointment > list = ht.get( app.getStartTime() );
+					list.add( app );
 				}else{
 					ArrayList< Appointment > list = new ArrayList<>();
-					list.add(temp.get(i));
-					ht.put( temp.get( i ).getStartTime(), list );
+					list.add( app );
+					ht.put( app.getStartTime(), list );
 				}
 			}
 
+			// sort date and iterate
 			Set<Date> keys = ht.keySet();
 			List<Date> keyList = new ArrayList( keys );
 			Collections.sort( keyList );
@@ -121,13 +123,6 @@ public class Assignment implements Calendar {
 					return ht.get( d ).get(0);
 				}
 			}
-			
-			
-			/*for ( Appointment i : temp ){
-				if ( i.getStartTime().equals( when ) || i.getStartTime().after( when ) ){
-					return i;
-				}
-			}*/
 		}
 		return null;
 	}
@@ -135,11 +130,10 @@ public class Assignment implements Calendar {
 	@Override
 	public void add(String description, Date when, String location) {
 		if ( description == null || when == null || location == null ){
-			throw new IllegalArgumentException( "One or argument is null" );
+			throw new IllegalArgumentException( "One or more argument is null" );
 		}
 		
 		MyAppointment temp = new MyAppointment( description, when, location );
-		//byAppointment.add( temp );	
 		//add to map associated by date
 		if ( !byDate.containsKey( when ) ){
 			ArrayList< Appointment > list = new ArrayList<>();
@@ -162,7 +156,6 @@ public class Assignment implements Calendar {
 
 	@Override
 	public void remove(Appointment appointment) {
-		// TODO Implement this! (then remove this TODO comment)
 		if ( appointment == null ){
 			throw new IllegalArgumentException("Appointment is null");
 		}
@@ -171,9 +164,18 @@ public class Assignment implements Calendar {
 		if ( !byDate.containsKey( date ) || !byLocation.containsKey( location ) ){
 			return;
 		}else{
-		//byAppointment.remove( appointment );
 		byDate.get( date ).remove( appointment );
 		byLocation.get( location ).remove( appointment );
+
+		//once the list is empty, remove the key from map
+			if ( byDate.get( date ).size() == 0 ){
+				byDate.remove( date );
+			}
+
+			if ( byLocation.get( location).size() == 0 ){
+				byLocation.remove( location );
+			}
 		}
 	}
+
 }
