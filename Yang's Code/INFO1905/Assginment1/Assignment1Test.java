@@ -5,7 +5,8 @@ import java.util.Date;
 
 public class Assignment1Test {
 	@Test
-	public void putTest(){
+    //Test if getAppointments return correct size of of list
+	public void getAppointmentsTest(){
         Date d = new Date(2016, 9, 03);
         Assignment temp = new Assignment();
         temp.add( "A", d,"SIT 117");
@@ -16,6 +17,7 @@ public class Assignment1Test {
     }
 
     @Test
+    //Test if getAppointments return correct result
     public void getAppointmentsContentTest(){
         Date a = new Date( 2016, 9, 03 );
         Date b = new Date( 2016, 9, 03 );
@@ -37,6 +39,7 @@ public class Assignment1Test {
     }
 
     @Test
+    // test if getAppointments return correct result when adding item with unsorted sequence
     public void getApointments_AddUnsorted(){
         Date a = new Date( 2016, 9, 03 );
         Date b = new Date( 2016, 9, 03 );
@@ -59,6 +62,7 @@ public class Assignment1Test {
     }
 
     @Test
+    // test if remove function working correctly
     public void getAppointmentLocation_RemoveOne(){
         Date a = new Date( 2016, 9, 03 );
         Date b = new Date( 20-16,9, 04 );
@@ -78,7 +82,8 @@ public class Assignment1Test {
     }
 
     @Test
-    public void getAppointment(){
+    //test if getNextAppointment return correct result
+    public void getNextAppointment(){
         Date a = new Date( 2016, 9, 03);
         Date b = new Date( 2016, 9, 04);
         Date c = new Date( 2016, 9, 02 );
@@ -89,11 +94,12 @@ public class Assignment1Test {
         temp.add( "B",b, l1 );
         temp.add("A", a, l1 );
 
-        Appointment app = temp.getNextAppointment( c );
+        Appointment app = temp.getNextAppointment( a );
         assertEquals( "A",app.getDescription() );
     }
 
     @Test
+    //test if getNextAppointment return correct result when given non exist argument
     public void getAppointment_AfterLast(){
         Date a = new Date( 2016, 9, 03 );
         Date b = new Date( 2016, 9, 04 );
@@ -110,7 +116,8 @@ public class Assignment1Test {
     }
 
     @Test
-    public void removeTest(){
+    //test if getNextAppointment return correct result when all appointment hasbeen removed
+    public void removeAllTest(){
         Date a = new Date( 2016, 9, 05 );
         Date b = new Date( 2016, 9, 06 );
         Date c = new Date( 2016, 9, 07 );
@@ -139,23 +146,8 @@ public class Assignment1Test {
         assertEquals( null, temp.getNextAppointment( c, l3 ) );
     }
 
-    @Test
-    public void removeTest_AddUnSorted(){
-        Date a = new Date( 2016, 9, 06 );
-        Date b = new Date( 2016, 9, 07 );
-        Date c = new Date( 2016, 9, 5 );
-
-        String l1 = "SIT115";
-
-        Assignment temp = new Assignment();
-        temp.add( "B", b, l1 );
-        temp.add( "A", a, l1 );
-        Appointment app = temp.getNextAppointment( c, l1 );
-        temp.remove( app );
-
-        assertEquals( "B", temp.getNextAppointment( b, l1 ).getDescription()  );
-    }
-
+    //test if remove non exist appointment return correct result
+    // if any problem happens, code would throw exception
     @Test
     public void removeNonExist(){
         Date a = new Date( 2016, 9, 05);
@@ -166,6 +158,38 @@ public class Assignment1Test {
 
         temp.remove( app );
         temp.remove( app );
-        pass();
+    }
+
+    @Test
+    //test if remove duplicate appointment return correct result
+    public void removeDuplicate(){
+
+        Date a = new Date( 2016, 9, 05 );
+        String l1 = "SIT118";
+
+        Assignment temp = new Assignment();
+        temp.add("A",a,l1);
+        temp.add("B",a,l1);
+
+        Appointment app = temp.getNextAppointment( a, l1 );
+        temp.remove( app );
+        
+        assertEquals( "B", temp.getNextAppointment( a, l1 ).getDescription() );
+    }
+
+    @Test
+    //test if return correct appointment when given a date that is before added date
+    public void getNextAppointment_BeforeInputDate(){
+        Date a = new Date( 2016, 9, 05 );
+        Date b = new Date( 2016, 9, 06 );
+        Date c = new Date( 2016, 9, 02 );
+
+        String l1 = "SIT118";
+
+        Assignment temp = new Assignment();
+        temp.add( "B", b, l1 );
+        temp.add( "A", a, l1 );
+        
+        assertEquals( "A", temp.getNextAppointment( c ).getDescription() );
     }
 }
