@@ -17,7 +17,7 @@ public class Assignment1Test {
     }
 
     @Test
-    //Test if getAppointments return correct result
+    //test if getAppointments return correct result
     public void getAppointmentsContentTest(){
         Date a = new Date( 2016, 9, 03 );
         Date b = new Date( 2016, 9, 03 );
@@ -99,8 +99,8 @@ public class Assignment1Test {
     }
 
     @Test
-    //test if getNextAppointment return correct result when given non exist argument
-    public void getAppointment_AfterLast(){
+    //test if getNextAppointment return correct result when given date that do not exist
+    public void getNextAppointment_AfterLast(){
         Date a = new Date( 2016, 9, 03 );
         Date b = new Date( 2016, 9, 04 );
         Date c = new Date( 2016,9, 05 );
@@ -146,9 +146,9 @@ public class Assignment1Test {
         assertEquals( null, temp.getNextAppointment( c, l3 ) );
     }
 
+    @Test
     //test if remove non exist appointment return correct result
     // if any problem happens, code would throw exception
-    @Test
     public void removeNonExist(){
         Date a = new Date( 2016, 9, 05);
         String l1 = "SIT118";
@@ -192,4 +192,21 @@ public class Assignment1Test {
         
         assertEquals( "A", temp.getNextAppointment( c ).getDescription() );
     }
+
+    @Test
+    // test in valid argument
+    // if any argument is invalid, an exception will be thrown.
+    public void invalidArugumentTest(){
+        Date a = null;
+        String l1 = null;
+        Appointment app = null;
+
+        Assignment temp = new Assignment();
+        temp.add( null, a, l1);
+        temp.getNextAppointment( a );
+        temp.getNextAppointment(a, l1);
+        temp.getAppointments( l1 );
+        temp.remove( app );
+    }    
+
 }
