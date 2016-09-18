@@ -51,19 +51,28 @@ public class TravelDestinations {
 	 * B to C, then we can say that both B and C are reachable from A.
 	 */
 	public List<String> getReachableDestinations(String country) {
-		Set< String > contrySet = new HashSet<>();
+		Set< String > set = new HashSet<>();
+		Stack< List< String > > stack = new Stack<>();
 		List< String > list = getDirectDestinations( country );
-		contrySet.addAll( list );
-		for ( int i = 0; i < list.size(); i++ ){
-			for ( String str : getDirectDestinations( list.get( i ) ) ){
-				if ( !list.contains( str ) && !contrySet.contains( str ) ){
-					list.add( str );
+		List< String > visited = new ArrayList<>();	
+		
+		stack.push ( list );
+
+		while ( !stack.empty() ){
+			List< String > temp = stack.pop();
+			if ( temp != null ){
+				set.addAll( temp );
+			}
+			for ( int i = 0; i < temp.size(); i++ ){
+				if ( !visited.contains( temp.get( i ) ) ){
+					stack.push( getDirectDestinations( temp.get( i ) ) );
 				}
+				visited.add( temp.get( i ) );
 			}
 		}
-		contrySet.addAll( list );
-		contrySet.remove( country );
-		return new ArrayList( contrySet );
+		
+		set.remove( country );
+		return new ArrayList( set );
 	}
 
 	/* Exercise 3 methods */
