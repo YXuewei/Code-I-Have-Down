@@ -1,4 +1,4 @@
-import java.util.List;
+import java.util.*;
 
 public class TravelDestinations {
 
@@ -6,6 +6,7 @@ public class TravelDestinations {
 
 	public TravelDestinations(Graph<String, Integer> graph) {
 		// TODO: implement this method
+		this.graph = graph;
 	}
 
 	/* Exercise 1 methods */
@@ -16,8 +17,16 @@ public class TravelDestinations {
 	 * empty List.
 	 */
 	public List<String> getDirectDestinations(String fromCountry) {
-		// TODO: implement this method
-		return null;
+		List< String > list = new ArrayList<>();
+		Iterable<Vertex<String>> verticesSet = graph.vertices();
+		for( Vertex< String > vertex : verticesSet ){
+			if ( vertex.getElement().equals( fromCountry ) ){
+				for ( Edge<Integer> edge : graph.outgoingEdges( vertex ) ){
+					list.add( graph.endVertices( edge )[ 1 ].getElement() );
+				}
+			}
+		}
+		return list;
 	}
 
 	/**
@@ -25,8 +34,14 @@ public class TravelDestinations {
 	 * 'toCountry'. Otherwise, return false.
 	 */
 	public boolean isDirectFlight(String fromCountry, String toCountry) {
-		// TODO: implement this method
-		return false;
+		boolean result = false;	
+		List< String > list = this.getDirectDestinations( fromCountry );
+		for ( String str : list ){
+			if ( str.equals( toCountry ) ){
+				result = true;
+			}
+		}
+		return result;
 	}
 
 	/* Exercise 2 methods */
@@ -36,8 +51,19 @@ public class TravelDestinations {
 	 * B to C, then we can say that both B and C are reachable from A.
 	 */
 	public List<String> getReachableDestinations(String country) {
-		// TODO: implement this method
-		return null;
+		Set< String > contrySet = new HashSet<>();
+		List< String > list = getDirectDestinations( country );
+		contrySet.addAll( list );
+		for ( int i = 0; i < list.size(); i++ ){
+			for ( String str : getDirectDestinations( list.get( i ) ) ){
+				if ( !list.contains( str ) && !contrySet.contains( str ) ){
+					list.add( str );
+				}
+			}
+		}
+		contrySet.addAll( list );
+		contrySet.remove( country );
+		return new ArrayList( contrySet );
 	}
 
 	/* Exercise 3 methods */
@@ -47,7 +73,50 @@ public class TravelDestinations {
 	 * fewer flights to travel to from country 'current'
 	 */
 	public String closerDestination(String current, String destinationA, String destinationB) {
-		// TODO: implement this method
-		return null;
+		int lengthA = 0;
+		boolean foundA = false;
+		int lengthB = 0;
+		boolean foundB = false;
+
+		Stack< List<String> > stack = new Stack<>();
+		List< String > visited = new ArrayList<>();
+		List< String > list = getDirectDestinations( current );
+		visited.add( current );
+		stack.push( list );	
+		//get a list of direct destination,then check if A or B in such list
+		// if found, mark as found, if not, push list of destination into stack as pending for check
+		// since same return either, so value with less length would always be correct value
+		while ( !stack.empty() ){
+			List< String > temp = stack.pop();
+
+			if( foundA == false ){
+				lengthA++;
+			}
+
+			if ( foundB == false ){
+				lengthB++;
+			}
+			if ( temp.contains( destinationA ) ){
+				foundA = true;
+			}
+
+			if ( temp.contains( destinationB ) ){
+				foundB = true;
+			}
+
+			for ( int i = 0; i < temp.size(); i++ ){
+				if ( !visited.contains( temp.get( i ) ) ){
+					stack.push( getDirectDestinations( temp.get( i ) ) );
+				}
+				visited.add( temp.get( i ) );
+			}
+		}
+		
+		if ( foundA == false && foundB == false ){
+			return null;
+		}
+		String result = ( lengthA >= lengthB ) ? destinationB : destinationA;
+
+		return result;
 	}
 }
