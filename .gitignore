@@ -9,3 +9,5 @@
 
 #Other
 *.log
+
+.BROWSE.VC.DB
