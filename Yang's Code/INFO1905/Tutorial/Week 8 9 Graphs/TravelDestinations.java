@@ -128,4 +128,28 @@ public class TravelDestinations {
 
 		return result;
 	}
+
+	public String cheapestDirectFlight(String fromCountry) {
+		// TODO: implement this method
+		return null;
+	}
+
+	/**
+	 * Return the minimal cost to get to toCountry from fromCountry. If
+	 * fromCountry cannot be reached, then return Integer.MAX_VALUE
+	 */
+	public int shortestPathCost(String fromCountry, String toCountry) {
+		// TODO: implement this
+		return Integer.MAX_VALUE;
+	}
+
+	/**
+	 * Return a path which has the minimal cost to get to toCountry from
+	 * fromCountry. If fromCountry cannot be reached, then return null
+	 */
+	public List<String> shortestPath(String fromCountry, String toCountry) {
+		// TODO: implement this
+		return null;
+	}
+	
 }
