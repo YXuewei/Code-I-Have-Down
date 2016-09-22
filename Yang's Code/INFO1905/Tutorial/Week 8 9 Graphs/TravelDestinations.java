@@ -130,8 +130,33 @@ public class TravelDestinations {
 	}
 
 	public String cheapestDirectFlight(String fromCountry) {
-		// TODO: implement this method
-		return null;
+		Iterable< Vertex<String>> vertexSet = graph.vertices();
+		Vertex<String> from = null;
+		for ( Vertex<String> v : vertexSet ){
+			if ( v.getElement().equals( fromCountry ) ){
+				from = v;
+				break;
+			}
+		}
+		if( from == null ){
+			return null;
+		}
+
+		Edge< Integer > minimalEdge = null;
+		int minimalValue = Integer.MAX_VALUE;
+		Iterable< Edge< Integer > > edegeSet = graph.outgoingEdges( from );
+		int count = 0;
+		for ( Edge< Integer > e : edegeSet ){
+			count++;
+			if ( e.getElement() < minimalValue ){
+				minimalValue = e.getElement();
+				minimalEdge = e;
+			}
+		}
+		if ( count == 0 ){
+			return null;
+		}
+		return graph.endVertices( minimalEdge )[1].getElement();
 	}
 
 	/**
