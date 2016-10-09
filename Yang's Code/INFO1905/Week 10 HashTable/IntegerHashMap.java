@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class IntegerHashMap<V> implements Map<Integer, V> {
 	
 	private class HashMapEntry implements Entry<Integer, V> {
@@ -6,19 +8,18 @@ public class IntegerHashMap<V> implements Map<Integer, V> {
 		private V value;
 		
 		public HashMapEntry(Integer key, V value) {
-			// TODO
+			this.key = key;
+            this.value = value;
 		}
 
 		@Override
 		public Integer getKey() {
-			// TODO Auto-generated method stub
-			return null;
+			return key;
 		}
 
 		@Override
 		public V getValue() {
-			// TODO Auto-generated method stub
-			return null;
+			return value;
 		}
 	}
 	
@@ -41,50 +42,95 @@ public class IntegerHashMap<V> implements Map<Integer, V> {
 
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.numberOfItems;
 	}
 
 	@Override
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
+        if ( numberOfItems == 0 ){
+            return true;
+        }
+
+        return false;
 	}
 
 	@Override
 	public V get(Integer key) {
-		// TODO Auto-generated method stub
+		int index = compress( hash( key ) );
+        if ( items.length - 1 >= index ){
+            if ( items[ index ] != null ){
+                if ( items[ index ].getKey() == key ){
+                	return items[ index ].getValue();
+				}
+            }
+        }
 		return null;
 	}
 
 	@Override
 	public V put(Integer key, V value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	   int index = compress( hash( key ) );
+       if( items[ index ] != null ){
+		   if( items[ index ].getKey() != key ){
+        		throw new IllegalArgumentException("Key conflict");
+		   }
+       }
+       if( items[ index ] == null ){
+            numberOfItems++;
+            items[index] = new HashMapEntry(key, value);
+            return null;
+       }
+        V oldValue = items[ index ].getValue(); 
+      	items[index] = new HashMapEntry(key, value);
+        return oldValue;
+    }
 
 	@Override
 	public V remove(Integer key) {
-		// TODO Auto-generated method stub
+		int index = compress( hash( key ) );
+		if ( items.length - 1 >= index ){
+			if ( items[index] != null ){
+				if ( items[ index ].getKey() == key ){
+					V oldValue = items[ index ].getValue();	
+					items[ index ] = null;
+					numberOfItems--;
+					return oldValue;
+				}
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public Iterable<Integer> keySet() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList< Integer> list = new ArrayList< Integer >();
+		for ( int i = 0; i < items.length; i++ ){
+			if( items[ i ] != null ){
+				list.add( items[ i ].getKey() );
+			}
+		}
+		return list;
 	}
 
 	@Override
 	public Iterable<V> values() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList< V > list = new ArrayList< V >();
+		for ( int i = 0; i < items.length; i++ ){
+			if ( items[ i ] != null ){
+				list.add( items[ i ].getValue() );
+			}
+		}	
+		return list;
 	}
 
 	@Override
 	public Iterable<Entry<Integer, V>> entrySet() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList< Entry<Integer,V> > list = new ArrayList< Entry<Integer, V>>();
+		for ( int i = 0; i < items.length; i++ ){
+			if ( items[ i ] != null ){
+				list.add( items[ i ] );
+			}
+		}	
+		return list;
 	}
-
 }
