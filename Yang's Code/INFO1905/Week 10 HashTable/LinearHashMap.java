@@ -1,10 +1,9 @@
-import java.util.*;
 
-public class IntegerHashMap<V> implements Map<Integer, V> {
+public class LinearHashMap<K, V> implements Map<K, V> {
 	
-	private class HashMapEntry implements Entry<Integer, V> {
+	private class HashMapEntry implements Entry<K, V> {
 		
-		private Integer key;
+		private K key;
 		private V value;
 		
 		public HashMapEntry(Integer key, V value) {
@@ -27,8 +26,8 @@ public class IntegerHashMap<V> implements Map<Integer, V> {
 	private int numberOfItems;
 	
 	@SuppressWarnings("unchecked")	
-	public IntegerHashMap(int capacity) {
-		items = (IntegerHashMap<V>.HashMapEntry[]) new IntegerHashMap.HashMapEntry[capacity];
+	public LinearHashMap(int capacity) {
+		items = (LinearHashMap<K, V>.HashMapEntry[]) new LinearHashMap.HashMapEntry[capacity];
 		this.numberOfItems = 0;
 	}
 	
