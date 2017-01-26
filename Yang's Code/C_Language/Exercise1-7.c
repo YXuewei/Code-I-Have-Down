@@ -3,29 +3,37 @@
 #define MAXLINE 300
 #define LIMIT 80
 
-int getLine( char s[], int limit);
+int getLine(char s[], int limit);
 
-int main(){
+int main()
+{
     char line[MAXLINE];
     scanf("%s", line);
     int len;
 
-    while ( len = getLine( line, MAXLINE ) > 0){
-        if ( len > LIMIT){
+    while (len = getLine(line, MAXLINE) > 0)
+    {
+        if (len > LIMIT)
+        {
             printf("%s", line);
-        }else{
+        }
+        else
+        {
             printf("The length is less than 80");
         }
-        scanf( "%s", line);
+        scanf("%s", line);
         printf("\n");
     }
 }
 
-int getLine( char s[], int limit){
-    int c , i;
+int getLine(char s[], int limit)
+{
+    int c, i;
     c = 0;
-    for ( i = 0; i < limit; ++i ){
-        if ( s[i] != EOF || s[i] != '\n'){
+    for (i = 0; i < limit; ++i)
+    {
+        if (s[i] != EOF || s[i] != '\n')
+        {
             c += 1;
         }
     }
