@@ -22,7 +22,8 @@ int main ( int argc, char *argv[] )
         int stpo = atoi( argv[ 2 ] );
         int iteco = atoi( argv[3] );
         int len = strlen( argv[1]);
-        char str[ len + 1] = &argv[1];
+        char str[ len + 1];
+        strcpy( str, argv[1]);
         int isRev = 0;
         
         for(int i = 0; i < iteco; i++ )
