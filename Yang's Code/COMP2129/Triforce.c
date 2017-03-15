@@ -47,6 +47,7 @@ void firstLevel( int height )
                 printf(" ");
         }
         printf("\\");
+        printf("\n");
     }
     return;
 }
