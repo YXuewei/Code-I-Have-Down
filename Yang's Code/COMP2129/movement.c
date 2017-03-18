@@ -4,7 +4,7 @@
 
 void bound( int width);
 int argumentCheck( int argc, char *argv[] );
-void printBoard( int width, int height, int x, int y, int *board[]);
+void printBoard( int width, int height, int x, int y, int *board[][]);
 
 
 int main( int argc, char *argv[] )
@@ -34,17 +34,21 @@ int main( int argc, char *argv[] )
     x = atoi(argv[3]);
     y = atoi(argv[4]);
     limit = atoi(argv[5]);
+    int move = limit;
 
     bound( width );
-    int board[width][height];
+    int board[height][width];
     //fill coloum where (x,y) is
-    for ( int i = x - 1; i >= 0; i++ )
+    for ( int i = x - 1; i >= 0; i-- )
     {
-        board[x][i] = limit - ( limit - i);
+        board[y][i] = move - 1;
+        move--;
     }
-    for ( int i = x + 1; i < width; i-- )
+    move = limit;
+    for ( int i = x + 1; i < width; i++ )
     {
-        board[x][i] = limit - ( i - x );
+        board[y][i] = move - 1;
+        move--;
     }
 
     int col = y + 1;
@@ -52,16 +56,16 @@ int main( int argc, char *argv[] )
     {
         for ( int j = 0; j < width; j++ )
         {
-            board[j][col] = board[j][col - 1] - 1;
+            board[col][j] = board[col-1][j] - 1;
         }
         col++;
     }
     col = y - 1;
-    for ( int i = 0; i < y; i++ )
+    for ( int i = 0; i < y - 1; i++ )
     {
         for ( int j = 0; j < width;j++ )
         {
-            board[j][col] = board[j][col+1] - 1;
+            board[col][j] = board[col+1][j] - 1;
         }
     }
 
@@ -107,29 +111,30 @@ int argumentCheck( int argc, char *argv[])
     return 0;
 }
 
-void printBoard( int width, int height, int x, int y, int *board[])
+void printBoard( int width, int height, int x, int y, int *board[][])
 {
     for ( int i = 0; i < height; i++ )
     {
         printf("|");
         for ( int j = 0; j < width; j++ )
         {
-            if ( i == x && j == y )
+            if ( j == x && i == y )
             {
                 printf("C");
                 printf("|");
             }
-            else if ( board[j][i] < 0 )
+            else if ( board[i][j] < 0 )
             {
-                printf( " ");
+                printf(" ");
                 printf("|");
             }
             else
             {
-                printf("%d", board[j][i]);
+                printf("%d", board[i][j]);
                 printf("|");
             }
         }
+        printf("\n");
     }
     return;
 }
