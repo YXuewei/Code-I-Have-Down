@@ -94,12 +94,12 @@ int argumentCheck( int argc, char *argv[])
     if ( !isdigit(argv[3][0] ) )
         return 4;
     int x = atoi( argv[ 3 ]);
-    if ( x < 0 || x < width )
+    if ( x < 0 || x > width )
         return 4;
     if ( !isdigit(argv[4][0]) )
         return 4;
     int y = atoi( argv[4]);
-    if ( y < 0 || y < height )
+    if ( y < 0 || y > height )
         return 4;
     int limit = atoi( argv[5]);
     if (limit <= 0 )
