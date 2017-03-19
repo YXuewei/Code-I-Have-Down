@@ -131,7 +131,7 @@ int argumentCheck( int argc, char *argv[])
     if ( y < 0 || y > height )
         return 4;
     int limit = atoi( argv[5]);
-    if (limit < 0 )
+    if (limit < 0 || !isdigit((int)argv[5][0]))
         return 4;
     return 0;
 }
