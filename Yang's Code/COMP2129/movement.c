@@ -4,7 +4,7 @@
 
 void bound( int width);
 int argumentCheck( int argc, char *argv[] );
-//void printBoard( int width, int height, int x, int y, int *board[]);
+void printBoard( int width, int height, int x, int y, int board[height][width]);
 
 
 int main( int argc, char *argv[] )
@@ -71,30 +71,7 @@ int main( int argc, char *argv[] )
         col--;
     }
 
-   // printBoard( width, height, x, y, bord[height][width] );
-   for ( int i = 0; i < height; i++ )
-    {
-        printf("|");
-        for ( int j = 0; j < width; j++ )
-        {
-            if ( j == x && i == y )
-            {
-                printf("C");
-                printf("|");
-            }
-            else if ( board[i][j] < 0 )
-            {
-                printf(" ");
-                printf("|");
-            }
-            else
-            {
-                printf("%d", board[i][j]);
-                printf("|");
-            }
-        }
-        printf("\n");
-    }
+    printBoard( width, height, x, y, board );
     bound(width);
     return 0;
 }
@@ -136,7 +113,7 @@ int argumentCheck( int argc, char *argv[])
     return 0;
 }
 
-/*void printBoard( int width, int height, int x, int y, int *board[])
+void printBoard( int width, int height, int x, int y, int board[height][width])
 {
     for ( int i = 0; i < height; i++ )
     {
@@ -162,4 +139,4 @@ int argumentCheck( int argc, char *argv[])
         printf("\n");
     }
     return;
-}*/
+}
