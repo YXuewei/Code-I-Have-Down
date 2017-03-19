@@ -4,7 +4,7 @@
 
 void bound( int width);
 int argumentCheck( int argc, char *argv[] );
-void printBoard( int width, int height, int x, int y, int *board[][]);
+//void printBoard( int width, int height, int x, int y, int *board[]);
 
 
 int main( int argc, char *argv[] )
@@ -38,6 +38,7 @@ int main( int argc, char *argv[] )
 
     bound( width );
     int board[height][width];
+    board[y][x] = limit;
     //fill coloum where (x,y) is
     for ( int i = x - 1; i >= 0; i-- )
     {
@@ -61,15 +62,39 @@ int main( int argc, char *argv[] )
         col++;
     }
     col = y - 1;
-    for ( int i = 0; i < y - 1; i++ )
+    for ( int i = 0; i < y ; i++ )
     {
         for ( int j = 0; j < width;j++ )
         {
             board[col][j] = board[col+1][j] - 1;
         }
+        col--;
     }
 
-    printBoard( width, height, x, y, board );
+   // printBoard( width, height, x, y, bord[height][width] );
+   for ( int i = 0; i < height; i++ )
+    {
+        printf("|");
+        for ( int j = 0; j < width; j++ )
+        {
+            if ( j == x && i == y )
+            {
+                printf("C");
+                printf("|");
+            }
+            else if ( board[i][j] < 0 )
+            {
+                printf(" ");
+                printf("|");
+            }
+            else
+            {
+                printf("%d", board[i][j]);
+                printf("|");
+            }
+        }
+        printf("\n");
+    }
     bound(width);
     return 0;
 }
@@ -90,10 +115,10 @@ int argumentCheck( int argc, char *argv[])
         return 1; 
     int width, height;
     width = atoi( argv[1]);
-    if (width == 0)
+    if (width <= 0 )
         return 2;
     height = atoi( argv[2]);
-    if ( height == 0 )
+    if ( height <= 0 )
         return 3;
     if ( !isdigit(argv[3][0] ) )
         return 4;
@@ -106,12 +131,12 @@ int argumentCheck( int argc, char *argv[])
     if ( y < 0 || y > height )
         return 4;
     int limit = atoi( argv[5]);
-    if (limit <= 0 )
+    if (limit < 0 )
         return 4;
     return 0;
 }
 
-void printBoard( int width, int height, int x, int y, int *board[][])
+/*void printBoard( int width, int height, int x, int y, int *board[])
 {
     for ( int i = 0; i < height; i++ )
     {
@@ -137,4 +162,4 @@ void printBoard( int width, int height, int x, int y, int *board[][])
         printf("\n");
     }
     return;
-}
+}*/
