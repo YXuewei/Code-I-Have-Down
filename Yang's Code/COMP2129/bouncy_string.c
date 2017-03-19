@@ -6,7 +6,7 @@ int main ( int argc, char *argv[] )
 {
     if ( argc != 4 )
     {
-        printf( "Invalid arguments number\n");
+        printf( "Invalid arguments length\n");
         return 1;
     }
     else if( atoi(argv[2]) < 0 )
@@ -15,7 +15,7 @@ int main ( int argc, char *argv[] )
     }
     else if( atoi(argv[3]) < 0 )
     {    
-        printf( "Invalid iteration count");
+        printf( "Invalid iteration count\n");
     }
     else
     {   
@@ -26,7 +26,7 @@ int main ( int argc, char *argv[] )
         strcpy( str, argv[1]);
         int isRev = 0;
         
-        for(int i = 0; i < iteco; i++ )
+        for(int i = 0; i <= iteco; i++ )
         {
             putchar( str[stpo]);
             if( stpo == len - 1)
@@ -38,5 +38,6 @@ int main ( int argc, char *argv[] )
             else
                 stpo++;
         }
+		printf("\n");
     }
 }
