@@ -8,18 +8,19 @@ void baseLevel( int height );
 
 int main(){
     
-    printf("Enter height ");
+    printf("Enter height: ");
     char ch[100];
     scanf("%s", ch);
+    printf("\n");
     if ( isalpha(ch[0]) )
     {
-        printf("Invalid height");
+        printf("Invalid height.\n");
         return 1;
     }
     int height = atoi( ch );
     if ( height < 2 || height > 20 )
     {
-        printf("Invalid height");
+        printf("Invalid height.\n");
         return 1;
     }
         
