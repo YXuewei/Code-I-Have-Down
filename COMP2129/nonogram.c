@@ -8,8 +8,7 @@ int argumentCheck( char *line );
 
 int main(){
     int w, h;
-    char line[3]; 
-    fgets(line, 3,stdin);
+    char line[4];     scanf("%3[^\n]",line);    
     int n = argumentCheck( line );
     if ( n == 0 )
     {
@@ -18,12 +17,14 @@ int main(){
     }
     w = atoi( &line[0] );
     h = atoi( &line[2] );
+    //getchar();
     int i = 0;
     int image[h][w];
+    char input[w+1];
     while( i < h)
     {
-        char input[w];
-        fgets(input, w, stdin);
+        //char input[w];
+        scanf("%s",input);
         for ( int j = 0; j < w; j++ )
         {
             if ( input[j] == '0' || input[j] == '1')
@@ -31,9 +32,12 @@ int main(){
                 image[i][j] = (int)input[j] - 48;
             }
             else
+            {
                 printf("Invalid image data\n");
                 return 1;
+            }
         }
+        i++;
     }
    /* n = imageCheck( w, h, image[h][w]) ;
     if( n == 0)
@@ -48,17 +52,24 @@ int main(){
     {
         for( int k = 0; k < w; k++ )
         {
-            if(image[j][k] == 1)
+            if(image[j][k] == 1 )
                 count += 1;
             else if ( count != 0 )
+            {
                 printf("%d",count);
                 count = 0;
-            if( k == w - 1)
-                printf("\n");
-            else
+            if( k != w - 1)
                 printf(" ");
+            }
+            if ( count != 0 && k == w - 1)
+            {
+                printf("%d", count);
+                count = 0;
+            }
         }
+        printf("\n");
     }
+    printf("\n");
 
     printf("Y:\n");
     count = 0;
@@ -69,14 +80,17 @@ int main(){
             if( image[k][j] == 1)
                 count += 1;
             else if( count != 0)
+            {
                 printf("%d", count);
                 count = 0;
             if ( k == h - 1)
                 printf("\n");
             else
                 printf(" ");
+            }
         }
     }
+    printf("\n");
 }
 
 int argumentCheck( char *line ){
@@ -86,9 +100,9 @@ int argumentCheck( char *line ){
         int x = (int)line[0] - 48;
         int y = (int)line[2] - 48;
         if ( x < 0 || y < 0)
-            return 1;
-        else
             return 0;
+        else
+            return 1;
     }
 }
 
