@@ -23,13 +23,13 @@ int main()
     //getchar();
     int i = 0;
     int image[h][w];
-    char input[w+1];
+    int input[w];
     while( i < h)
     {
-        //char input[w];
-        
+        getchar();
         for ( int j = 0; j < w; j++ )
         {
+            input[j] = getchar();
             if ( input[j] == '0' || input[j] == '1')
             {
                 image[i][j] = (int)input[j] - 48;
@@ -39,29 +39,64 @@ int main()
                 printf("Invalid image data\n");
                 return 1;
             }
-        i++;
         }
+        i++;
     }
 
+    int isEmpty = 1;
+    int printed = 0;
     printf("X:\n");
     int count = 0;
     for ( int j = 0; j < h; j++ )
     {
-        for( int k = 0; k < w; k++ )
+        for( int k = w - 1; k >= 0; k-- )
         {
             if(image[j][k] == 1 )
                 count += 1;
             else if ( count != 0 )
             {
-                printf("%d",count);
-                count = 0;
-            if( k != w - 1)
-                printf(" ");
+                if( printed == 0)
+                {
+                    printf("%d",count);
+                    count = 0;
+                    isEmpty = 0;
+                    printed = 1;
+                }
+                else
+                {
+                    printf(" ");
+                    printf("%d", count);
+                    count = 0;
+                    isEmpty = 0;
+                }
+
             }
-            if ( k == w - 1)
+            if ( k == 0)
             {
-                printf("%d", count);
-                count = 0;
+                if( isEmpty == 1 && count == 0)
+                {
+                    printf("0");
+                    printed = 0;
+                }
+                else if ( count != 0)
+                {
+                    if( printed == 0)
+                    {
+                        printf("%d",count);
+                        count = 0;
+                        isEmpty = 1;
+                        printed = 0;
+                    }
+                    else
+                    {
+                        printf(" ");
+                        printf("%d", count);
+                        count = 0;
+                        isEmpty = 1;
+                        printed = 0;
+                    }
+                }
+                printed = 0;
             }
         }
         printf("\n");
@@ -70,29 +105,67 @@ int main()
 
     printf("Y:\n");
     count = 0;
+    isEmpty = 1;
+    printed = 0;
     for ( int j = 0; j < w ; j++ )
     {
-        for ( int k = h - 1; k > 0; k-- )
+        for ( int k = h - 1; k >= 0; k-- )
         {
             if( image[k][j] == 1)
                 count += 1;
             else if( count != 0)
             {
-                printf("%d", count);
-                count = 0;
-            if ( k == h - 1)
-                printf("\n");
-            else
-                printf(" ");
+                if( printed == 0 )
+                {
+                    printf("%d", count);
+                    count = 0;
+                    isEmpty = 0;
+                    printed = 1;
+                }
+                else
+                {
+                    printf(" ");
+                    printf("%d", count);
+                    count = 0;
+                    isEmpty = 0;
+                }
+            }
+            if ( k == 0)
+            {
+                if (isEmpty == 1 && count == 0)
+                {
+                   printf("0"); 
+                   printed = 0;
+                }
+                else if ( count != 0)
+                {
+                  if( printed == 0)
+                    {
+                        printf("%d",count);
+                        count = 0;
+                        isEmpty = 1;
+                        printed = 0;
+                    }
+                    else
+                    {
+                        printf(" ");
+                        printf("%d", count);
+                        count = 0;
+                        isEmpty = 1;
+                        printed = 0;
+                    }
+                }
+                printed = 0;
+                isEmpty = 1;
             }
         }
+        printf("\n");
     }
-    printf("\n");
 }
 
 int argumentCheck( char x[], char y[] )
 {
-    if ( atoi(x) == 0 || atoi(y) == 0)
+    if ( atoi(x) <= 0 || atoi(y) <= 0)
     {
         return 0;
     }
