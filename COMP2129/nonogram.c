@@ -3,20 +3,24 @@
 #include <stdlib.h>
 #include "nonogram.h"
 
-int argumentCheck( char *line );
+int argumentCheck( char x[], char y[]);
 //int imageCheck( int w, int h, int *image[h][w] );
 
-int main(){
+int main()
+{
     int w, h;
-    char line[4];     scanf("%3[^\n]",line);    
-    int n = argumentCheck( line );
+    char arg1[3];
+    char arg2[3];    
+    scanf("%s", arg1);
+    scanf("%s", arg2);   
+    int n = argumentCheck( arg1, arg2 );
     if ( n == 0 )
     {
         printf("Cannot decode\n");
         return 1;
     }
-    w = atoi( &line[0] );
-    h = atoi( &line[2] );
+    w = atoi( arg1);
+    h = atoi( arg2 );
     //getchar();
     int i = 0;
     int image[h][w];
@@ -24,7 +28,7 @@ int main(){
     while( i < h)
     {
         //char input[w];
-        scanf("%s",input);
+        
         for ( int j = 0; j < w; j++ )
         {
             if ( input[j] == '0' || input[j] == '1')
@@ -35,7 +39,7 @@ int main(){
             {
                 printf("Invalid image data\n");
                 return 1;
-            }
+            
         }
         i++;
     }
@@ -61,7 +65,7 @@ int main(){
             if( k != w - 1)
                 printf(" ");
             }
-            if ( count != 0 && k == w - 1)
+            if ( k == w - 1)
             {
                 printf("%d", count);
                 count = 0;
@@ -93,17 +97,13 @@ int main(){
     printf("\n");
 }
 
-int argumentCheck( char *line ){
-    if ( !isdigit(line[0]) || !isdigit(line[2]) )
+int argumentCheck( char x[], char y[] )
+{
+    if ( atoi(x) == 0 || atoi(y) == 0)
+    {
         return 0;
-    else{
-        int x = (int)line[0] - 48;
-        int y = (int)line[2] - 48;
-        if ( x < 0 || y < 0)
-            return 0;
-        else
-            return 1;
     }
+    return 1;
 }
 
 /*int imageCheck( int w, int h, int image[h][w])
