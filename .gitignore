@@ -12,3 +12,5 @@ test.c
 *.log
 
 .BROWSE.VC.DB
+
+vgcore*
