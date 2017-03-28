@@ -21,14 +21,16 @@ int main( int argc, char *argv[])
 
     //float gr = 1.618;
     float result = (a + b)/ a;
-    result = roundf( result*10.000f)/10.000f;
-    if ( result != 1.618)
+    float diff = result - 1.618;
+    float result2 = (a + b)/b;
+    float diff2 = result2 - 1.618;
+    if ( ( diff < 0.0005 && diff > -0.0005 ) || ( diff2 < 0.0005 && diff2 > -0.0005) )
     {
-        printf("\nMaybe Next Time.\n");
+        printf("\nGolden ratio!\n");
     }
     else
     {
-        printf("\nGolden Ratio!\n");
+        printf("\nMaybe next time.\n");
     }
     return 0;
 }
