@@ -23,16 +23,16 @@ int main()
     //getchar();
     int i = 0;
     int image[h][w];
-    int input[w];
+    int input;
     while( i < h)
     {
         getchar();
         for ( int j = 0; j < w; j++ )
         {
-            input[j] = getchar();
-            if ( input[j] == '0' || input[j] == '1')
+            input = getchar();
+            if ( input == '0' || input == '1')
             {
-                image[i][j] = (int)input[j] - 48;
+                image[i][j] = (int)input - 48;
             }
             else
             {
