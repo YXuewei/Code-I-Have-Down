@@ -4,6 +4,7 @@
 #C
 *.exe
 test.c
+test.cpp
 
 #VSCode
 .vscode/**
