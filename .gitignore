@@ -19,3 +19,4 @@ vgcore*
 *.dSYM
 launch.json
 tasks.json
+**.json
