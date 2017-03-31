@@ -8,6 +8,7 @@ test.cpp
 
 #VSCode
 .vscode/**
+.DS_Store
 
 #Other
 *.log
