@@ -4,6 +4,7 @@
 #C
 *.exe
 test.c
+test.cpp
 
 #VSCode
 .vscode/**
@@ -14,3 +15,8 @@ test.c
 .BROWSE.VC.DB
 
 vgcore*
+*.out
+*.dSYM
+launch.json
+tasks.json
+**.json
