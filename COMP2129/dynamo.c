@@ -3,26 +3,26 @@
 
 int main ( int argc, char *argv[] )
 {
-    char *array = (char*)malloc(10 * sizeof(char));
-    char input;
-    char *warden = array;
+    int *array = (int*)malloc(10 * sizeof(int));
+    int input;
+    int *warden;
+    warden = array;
     int count = 0;
     while ( (input = getchar() ) != EOF )
     {
-        if ( ( count % 10) == 0 ) 
+        if ( ( count % 10) == 0 && count != 0) 
         {
-        warden = realloc( warden, count * sizeof(char) );
+        array = (int*)realloc( array,  2 * count * sizeof(int) );
         }
-        *array = input;
-        array++;
+        warden = array + count;
+        *warden = input;
         count++;
     }
 
-    while ( array != ( warden - 1 ))
+    for (int i = count - 1; i >= 0; i-- )
     {
-        printf( "%c", *array);
-        array--;
+        printf( "%c", (char)*(array + i ) );
     }
-    free( warden );
+    free( array );
     printf( "\n");
 }
