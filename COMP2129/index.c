@@ -33,11 +33,12 @@ int main(int argc, char* argv[]) {
     if ( fp == NULL )
     {
         printf("File Does Not Exist\n");
+        //perror("Failed: ");
         return 1;
     }
 
-    uint32_t width;
-    uint32_t height;
+    int width;
+    int height;
     uint16_t magic;
     fread( &width, 4, 1, fp);
     fread( &height, 4, 1, fp);
@@ -59,7 +60,7 @@ int main(int argc, char* argv[]) {
 
     int read = 0;
 
-    pixel_t *head = (pixel_t*)malloc( 28 * sizeof( int ) );
+    pixel_t *head = (pixel_t*)malloc( 16 * sizeof( int ) );
     pixel_t *warden = head;
     list_init( head);
     int count = 0;
@@ -70,18 +71,18 @@ int main(int argc, char* argv[]) {
     while ( 1)
     {
         is_freed = 0;
-        fread( &read, 4, 1, fp);
+        fread( &read, 1, 1, fp);
         if ( feof(fp) )
         {
             break;
         }
-        pixel_t *node = (pixel_t*)malloc( 28 * sizeof( int ) );
+        pixel_t *node = (pixel_t*)malloc( 16 * sizeof( int ) );
         node->red = read;
-        fread( &read, 4, 1, fp);
+        fread( &read, 1, 1, fp);
         node->green = read;
-        fread( &read, 4, 1, fp);
+        fread( &read, 1, 1, fp);
         node->blue = read;
-        fread( &read, 4, 1, fp);
+        fread( &read, 1, 1, fp);
         node->empty = read;
         
         if ( width_po == width - 1)
@@ -92,7 +93,10 @@ int main(int argc, char* argv[]) {
         else
         {
             width_po++;
-            height_po++;
+            if( height_po < 0 )
+            {
+                height_po = 0;
+            }
         }
 
         head = warden->next;
@@ -122,30 +126,36 @@ int main(int argc, char* argv[]) {
                         }
                     }
                 }
-                head = head->next;
+                if ( i != count )
+                {
+                    head = head->next;
+                }
             }
         }
 
         if ( is_freed == 0 )
         {
+            count++;
             appened( head, node );
             node->index = count;
             array[height_po][width_po] = count;
-            mem[count] = 0;
-            count++;
+            mem[count] = node;
         }
         else
         {
+            //printf("%d       %d\n", height_po, width_po);
             array[height_po][width_po] = read;
         }
     }
+
+    fclose( fp );
 
     if ( (height_po != height - 1) || ( width_po != width - 1) )
     {
         printf("Invalid Image Data\n");
         return 1;
     }
-
+    //printf("count is %d\n", count);
     for ( int i = 0; i < height; i++ )
     {
         printf("["); 
@@ -160,10 +170,10 @@ int main(int argc, char* argv[]) {
                 printf(" %d,", array[i][j] );
             }
         }
-        printf("]");
+        printf("]\n");
     }
 
-    for ( int i = 0; i < count; i++ )
+    for ( int i = 0; i < count + 1; i++ )
     {
         free( mem[i] );
     }
