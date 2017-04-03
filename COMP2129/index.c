@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "ccrlklist.h"
 
 //You may add/modify/remove structs
 
@@ -18,8 +17,8 @@ struct pixel_t {
 };
 
 void list_init( pixel_t *head );
-void append( pixel_t *head, pixel_t n);
-void get_element( pixel_t *n, char value );// R,G,B represents color, I represent Index
+void appened( pixel_t *head, pixel_t *n);
+int get_element( pixel_t *n, char value );// R,G,B represents color, I represent Index
 
 int main(int argc, char* argv[]) {
 	
@@ -51,8 +50,125 @@ int main(int argc, char* argv[]) {
     }
 
     int array[ height ][ width ];
-    
+    pixel_t *mem[1000];
 
+    for ( int i = 0; i < 1000; i++ )
+    {
+        mem[i] = NULL;
+    }
+
+    int read = 0;
+
+    pixel_t *head = (pixel_t*)malloc( 28 * sizeof( int ) );
+    pixel_t *warden = head;
+    list_init( head);
+    int count = 0;
+    int is_freed = 0;
+    int width_po = -1;
+    int height_po = -1;
+
+    while ( 1)
+    {
+        is_freed = 0;
+        fread( &read, 4, 1, fp);
+        if ( feof(fp) )
+        {
+            break;
+        }
+        pixel_t *node = (pixel_t*)malloc( 28 * sizeof( int ) );
+        node->red = read;
+        fread( &read, 4, 1, fp);
+        node->green = read;
+        fread( &read, 4, 1, fp);
+        node->blue = read;
+        fread( &read, 4, 1, fp);
+        node->empty = read;
+        
+        if ( width_po == width - 1)
+        {
+            width_po = 0;
+            height_po++;
+        }
+        else
+        {
+            width_po++;
+            height_po++;
+        }
+
+        head = warden->next;
+
+        for ( int i = 0; i < count + 1; i++ )
+        {
+            if ( warden->next == NULL )
+            {
+                appened( warden, node);
+                node->index = count;
+                read = count;
+                mem[count] = node;
+                is_freed = 1;
+            }
+            else
+            {
+                if ( head->red == node->red )
+                {
+                    if ( head->green == node->green )
+                    {
+                        if ( head->blue == node->blue )
+                        {
+                            read = head->index;
+                            free( node );
+                            is_freed = 1;
+                            break;
+                        }
+                    }
+                }
+                head = head->next;
+            }
+        }
+
+        if ( is_freed == 0 )
+        {
+            appened( head, node );
+            node->index = count;
+            array[height_po][width_po] = count;
+            mem[count] = 0;
+            count++;
+        }
+        else
+        {
+            array[height_po][width_po] = read;
+        }
+    }
+
+    if ( (height_po != height - 1) || ( width_po != width - 1) )
+    {
+        printf("Invalid Image Data\n");
+        return 1;
+    }
+
+    for ( int i = 0; i < height; i++ )
+    {
+        printf("["); 
+        for ( int j = 0; j < width; j++ )
+        {
+            if ( j == width - 1)
+            {
+                printf(" %d ", array[i][j] );
+            }
+            else
+            {
+                printf(" %d,", array[i][j] );
+            }
+        }
+        printf("]");
+    }
+
+    for ( int i = 0; i < count; i++ )
+    {
+        free( mem[i] );
+    }
+
+    free( warden );    
 	return 0;
 }
 
@@ -62,7 +178,7 @@ void list_init( pixel_t *head )
     head->prev = NULL;
 }
 
-void appened( pixel_t *head, pixel_t n )
+void appened( pixel_t *head, pixel_t *n )
 {
      if ( head->next == NULL )
     {
@@ -79,18 +195,18 @@ void appened( pixel_t *head, pixel_t n )
     }
 }
 
-int get_element( pixel_t n, char value )
+int get_element( pixel_t *n, char value )
 {
     switch ( value )
     {
         case 'R':
-            return n.Red;
+            return n->red;
         case 'B':
-            return n.blue;
+            return n->blue;
         case 'G':
-            return n.green;
+            return n->green;
         case 'I':
-            return n.index;
+            return n->index;
         default:
             return -1;
     }
