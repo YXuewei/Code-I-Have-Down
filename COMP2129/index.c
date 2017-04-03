@@ -18,7 +18,6 @@ struct pixel_t {
 
 void list_init( pixel_t *head );
 void appened( pixel_t *head, pixel_t *n);
-int get_element( pixel_t *n, char value );// R,G,B represents color, I represent Index
 
 int main(int argc, char* argv[]) {
 	
@@ -33,7 +32,6 @@ int main(int argc, char* argv[]) {
     if ( fp == NULL )
     {
         printf("File Does Not Exist\n");
-        //perror("Failed: ");
         return 1;
     }
 
@@ -143,7 +141,6 @@ int main(int argc, char* argv[]) {
         }
         else
         {
-            //printf("%d       %d\n", height_po, width_po);
             array[height_po][width_po] = read;
         }
     }
@@ -155,7 +152,6 @@ int main(int argc, char* argv[]) {
         printf("Invalid Image Data\n");
         return 1;
     }
-    //printf("count is %d\n", count);
     for ( int i = 0; i < height; i++ )
     {
         printf("["); 
@@ -202,22 +198,5 @@ void appened( pixel_t *head, pixel_t *n )
         head->next = n;
         n->prev = head;
         n->next = temp;
-    }
-}
-
-int get_element( pixel_t *n, char value )
-{
-    switch ( value )
-    {
-        case 'R':
-            return n->red;
-        case 'B':
-            return n->blue;
-        case 'G':
-            return n->green;
-        case 'I':
-            return n->index;
-        default:
-            return -1;
     }
 }
