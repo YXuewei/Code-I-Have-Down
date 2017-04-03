@@ -21,3 +21,5 @@ vgcore*
 launch.json
 tasks.json
 **.json
+
+*.b
