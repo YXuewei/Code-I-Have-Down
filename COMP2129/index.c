@@ -49,12 +49,7 @@ int main(int argc, char* argv[]) {
     }
 
     int array[ height ][ width ];
-    pixel_t *mem[1000];
 
-    for ( int i = 0; i < 1000; i++ )
-    {
-        mem[i] = NULL;
-    }
 
     int read = 0;
 
@@ -106,7 +101,6 @@ int main(int argc, char* argv[]) {
                 appened( warden, node);
                 node->index = count;
                 read = count;
-                mem[count] = node;
                 is_freed = 1;
             }
             else
@@ -137,7 +131,6 @@ int main(int argc, char* argv[]) {
             appened( head, node );
             node->index = count;
             array[height_po][width_po] = count;
-            mem[count] = node;
         }
         else
         {
@@ -169,12 +162,17 @@ int main(int argc, char* argv[]) {
         printf("]\n");
     }
 
+    head = warden; 
     for ( int i = 0; i < count + 1; i++ )
     {
-        free( mem[i] );
+        if ( warden->next != NULL )
+        {
+            head = warden;
+            warden = warden->next;
+            free( head );
+        }
     }
-
-    free( warden );    
+    free( warden);
 	return 0;
 }
 
