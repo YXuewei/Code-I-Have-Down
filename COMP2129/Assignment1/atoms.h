@@ -16,6 +16,7 @@ typedef struct player_t player_t;
 typedef struct game_t game_t;
 typedef struct grid_t grid_t;
 typedef struct save_file_t save_file_t;
+typedef struct player_list player_list;
 
 struct save_t {
   char* filename;
@@ -29,7 +30,7 @@ struct move_t {
   player_t* old_owner; //NULL if unoccupied
 };
 struct player_t {
-  char* colour;
+  char colour;
   int grids_owned;
 };
 struct game_t {
@@ -45,5 +46,9 @@ struct save_file_t {
     uint8_t no_players;
     uint32_t* raw_move_data;
 };
-
+struct player_list{
+    plyaer_t *current;
+    player_t *next;
+    player_t *prev;
+};
 #endif
