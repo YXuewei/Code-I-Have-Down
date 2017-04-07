@@ -7,10 +7,11 @@
 
 
 void print_help();
+void appened( player_t *head, player_t *n );
+void list_init( player_t *p, const int *n );
 void start( char *input, int *progress, int *w, int *h, int *n);
 int command_check( const char *input );
 void take_input( char *input );
-void list_init( player_t *p, const int *n );
 
 
 int main(int argc, char** argv)
@@ -24,30 +25,17 @@ enum commands{ HELP, QUIT, DISPLAY, START, PLACE, UNDO, STAT,
   progress = &p;
   
   int *width, *height, *n_player;
+  int a,b,c;
+  a = 1;
+  b = 2;
+  c = 3;
+  width= &a;
+  height = &b;
+  n_player = &c;
 
   player_t *Red = (player_t*)malloc(sizeof(int) + sizeof(char));
   Red->colour = 'R';
   Red->grids_owned = 0;
-
-  player_t *Green = (player_t*)malloc(sizeof(int) + sizeof(char));
-  Green->colour = 'G';
-  Green->grids_owned = 0;
-
-  player_t *Purple = (player_t*)malloc(sizeof(int) + sizeof(char));
-  Purple->colour = 'P';
-  Purple->grids_owned = 0;
-
-  player_t *Blue = (player_t*)malloc(sizeof(int) + sizeof(char));
-  Blue->colour = 'B';
-  Blue->grids_owned = 0;
-
-  player_t *Yellow = (player_t*)malloc(sizeof(int) + sizeof(char));
-  Yellow->colour = 'Y';
-  Yellow->grids_owned = 0;
-
-  player_t *White = (player_t*)malloc(sizeof(int) + sizeof(char));
-  White->colour = 'W';
-  White->grids_owned = 0;
 
   while ( 1)
   {
@@ -163,7 +151,7 @@ void start( char *input, int* progress,int *width, int *height, int *n_player)
   *progress = 1;
   *width = w;
   *height = h;
-  *n_players = np;
+  *n_player = np;
 }
 
 int command_check( const char *input )
@@ -257,5 +245,69 @@ void take_input( char *input )
 
 void list_init(player_t *p, const int *n )
 {
-  
+  if (*n >= 3)
+  {
+    player_t *Green = (player_t *)malloc(sizeof(int) + sizeof(char));
+    Green->colour = 'G';
+    Green->grids_owned = 0;
+
+    player_t *Purple = (player_t *)malloc(sizeof(int) + sizeof(char));
+    Purple->colour = 'P';
+    Purple->grids_owned = 0;
+
+    appened( p, Green );
+    appened(Green, Purple);
+
+  }
+  if (*n >= 4)
+  {
+    player_t *Blue = (player_t *)malloc(sizeof(int) + sizeof(char));
+    Blue->colour = 'B';
+    Blue->grids_owned = 0;
+    appened( Purple, Blue);
+  }
+  if (*n >= 5)
+  {
+    player_t *Yellow = (player_t *)malloc(sizeof(int) + sizeof(char));
+    Yellow->colour = 'Y';
+    Yellow->grids_owned = 0;
+    appened( Blue, Yellow);
+  }
+  if (*n == 6)
+  {
+    player_t *White = (player_t *)malloc(sizeof(int) + sizeof(char));
+    White->colour = 'W';
+    White->grids_owned = 0;
+    appened(Yellow, White);
+  }
+  player_t *warden = p;
+  for ( int i = 0; i < *n; i++ )
+  {
+      if ( warden->next == NULL )
+      {
+        warden->next = p;
+        break;
+      }
+      else
+      {
+        warden = warden->next;
+      }
+  }
+}
+
+void appened( player_t *head, player_t *n )
+{
+     if ( head->next == NULL )
+    {
+        head->next = n;
+        n->prev = head;
+    }
+    else
+    {
+        player_t *temp;
+        temp = head->next;
+        head->next = n;
+        n->prev = head;
+        n->next = temp;
+    }
 }

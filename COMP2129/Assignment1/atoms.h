@@ -32,6 +32,8 @@ struct move_t {
 struct player_t {
   char colour;
   int grids_owned;
+  player_t *next;
+  player_t *prev;
 };
 struct game_t {
   move_t* moves;
@@ -45,10 +47,5 @@ struct save_file_t {
     uint8_t height;
     uint8_t no_players;
     uint32_t* raw_move_data;
-};
-struct player_list{
-    plyaer_t *current;
-    player_t *next;
-    player_t *prev;
 };
 #endif
