@@ -18,6 +18,7 @@ void display(grid_t **board, int *width, int *height);
 void clean(grid_t **board, int *move_made, int *progress, int *width, int *height, int *n_player, player_t *Red);
 void stats(char *input, player_t *current, int progress, int n_player, int move_made);
 void load( char *input, int *progress, int *n_player, grid_t **board, player_t **current, int *width, int *height);
+void save()
 
 grid_t **board;
 
@@ -857,18 +858,18 @@ void load( char *input, int *progress, int *n_player, grid_t **board, player_t *
     }
     else
     {
-      fread(width, 3, 1, fp);
-      fread(height, 3, 1, fp);
+      fread(width, 1, 1, fp);
+      fread(height,1, 1, fp);
       fread(n_player, 1 ,1 ,fp);
       player_init(*current, n_player, progress );
-      board = board_alloc(*width, *height);
-      board_init(board,width, height);
+      //board = board_alloc(*width, *height);
+      //board_init(board,width, height);
       fclose(fp);
       *progress = 1;
       printf("Game Loaded\n");
       printf("\n");
-      printf("Game Ready\n");
-      printf("%s Turn\n", (*current)->colour);
+      //printf("Game Ready\n");
+      //printf("%s Turn\n", (*current)->colour);
     }
   }
 }
