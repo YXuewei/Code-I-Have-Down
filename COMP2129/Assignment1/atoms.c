@@ -4,13 +4,22 @@
 #include "atoms.h"
 
 void print_help();
-void appened(player_t *head, player_t *n);
+void appened(player_t **head, player_t **n);
 void player_init(player_t *p, const int *n, const int *progress);
 void start(char *input, int *progress, int *w, int *h, int *n);
 int command_check(const char *input);
 void take_input(char *input);
-void place(player_t *pl, char *input, char *b, int *width, int *height, opd_grid *grid_po, move_list *m_list);
-void expand();
+void place(player_t **curr, char *input, int *width, int *height, grid_t **board, int *move_made, int *n_player, int *progress);
+grid_t **board_alloc(int w, int h);
+void board_init(grid_t **board, int *width, int *height);
+void expand(int w, int h, grid_t **board, player_t *curr, int *width, int *height);
+void print_bound(int *width);
+void display(grid_t **board, int *width, int *height);
+void clean(grid_t **board, int *move_made, int *progress, int *width, int *height, int *n_player, player_t *Red);
+void stats(char *input, player_t *current, int progress, int n_player, int move_made);
+void load( char *input, int *progress, int *n_player, grid_t **board, player_t **current, int *width, int *height);
+
+grid_t **board;
 
 int main(int argc, char **argv)
 {
@@ -33,33 +42,23 @@ int main(int argc, char **argv)
   int *progress;
   progress = &p; // 1 means yes, zero means no
 
-  int *width, *height, *n_player;
+  int *width, *height, *n_player, *move_made;
   //initiate those pointer first
-  int a, b, c;
+  int a, b, c, d;
   a = 1;
   b = 2;
   c = 3;
+  d = 0;
   width = &a;
   height = &b;
   n_player = &c;
-
-  char game_board[255][255];
-  for (int i = 0; i < 255; i++)
-  {
-    for (int j = 0; j < 255; j++)
-    {
-      game_board[i][j] = 'n';
-    }
-  }
-  opd_grid *g_list = (opd_grid *)malloc(sizeof(opd_grid));
-  opd_grid *grid_po = g_list;
-
-  move_list *m_list = (move_list *)malloc(sizeof(move_list));
-  move_list *m_warden = m_list;
+  move_made = &d;
 
   player_t *Red = (player_t *)malloc(sizeof(player_t));
-  Red->colour = 'Red\0';
+  Red->colour = "Red\0";
   Red->grids_owned = 0;
+  Red->next = NULL;
+  Red->prev = NULL;
   player_t *current = Red;
   while (1)
   {
@@ -71,50 +70,87 @@ int main(int argc, char **argv)
       print_help();
       break;
     case QUIT:
+      clean(board, move_made, progress, width, height, n_player, Red);
       printf("Bye!\n");
       return 0;
     case DISPLAY:
-      return 0;
+      display(board, width, height);
+      break;
     case START:
       start(input, progress, width, height, n_player);
       player_init(Red, n_player, progress);
+      board = board_alloc(*width, *height);
+      board_init(board, width, height);
       break;
     case PLACE:
-      place(current, input, game_board, width, height, grid_po);
+      place(&current, input, width, height, board, move_made, n_player,progress);
       break;
     case UNDO:
       return 0;
     case STAT:
-      return 0;
+      stats(input, Red, *progress, *n_player, *move_made);
+      break;
     case SAVE:
       return 0;
     case LOAD:
-      return 0;
+      load( input, progress,n_player, board, &current, width, height);
+      break;
     case PLAYFROM:
       return 0;
     default:
       printf("Invalid command\n");
+      //printf("%lu",sizeof(struct grid_t));
+      //printf("%lu",sizeof(player_t));
       break;
     }
+    /*if (command == QUIT)
+    {
+      break;
+    }*/
   }
 
   return 0;
 }
 
+void clean(grid_t **board, int *move_made, int *progress, int *width, int *height, int *n_player, player_t *Red)
+{
+  if (board != NULL)
+  {
+    player_t *temp;
+    for (int i = 0; i < *n_player; i++)
+    {
+      temp = Red;
+      Red = Red->next;
+      free(temp);
+    }
+
+    for (int i = 0; i < *height; i++)
+    {
+      free(board[i]);
+    }
+    free(board);
+  }
+  else
+  {
+    free(Red);
+  }
+}
 void print_help()
 {
-  printf("HELP    displays this help message\n");
-  printf("Quit    quits the current game\n");
   printf("\n");
-  printf("DISPLAY    draws the game board in terminal\n");
-  printf("START <width> <height> <number of players>    starts the game\n");
-  printf("PLACE <x> <y>    places anatom in a grid space\n");
-  printf("UNDO    undoes the last move made\n");
-  printf("STAT    displays game statistics\n");
+  printf("HELP displays this help message\n");
+  printf("QUIT quits the current game\n");
   printf("\n");
-  printf("SAVE <filename>    saves the state of the game\n");
-  printf("LOAD <filename>    loads a save file\n");
-  printf("PLAYFROM <turn>    plays from n steps into the game\n");
+  printf("DISPLAY draws the game board in terminal\n");
+  printf("START <number of players> <width> <height> starts the game\n");
+  printf("PLACE <x> <y> places an atom in a grid space\n");
+  printf("UNDO undoes the last move made\n");
+  printf("STAT displays game statistics\n");
+  printf("\n");
+  printf("SAVE <filename> saves the state of the game\n");
+  printf("LOAD <filename> loads a save file\n");
+  printf("PLAYFROM <turn> plays from n steps into the game\n");
+  printf("\n");
 }
 
 void start(char *input, int *progress, int *width, int *height, int *n_player)
@@ -170,10 +206,11 @@ void start(char *input, int *progress, int *width, int *height, int *n_player)
     return;
   }
 
-  printf("Game Ready\n");
-  printf("Red's Turn\n'");
-
   *progress = 1;
+  printf("Game Ready\n");
+  printf("Red's Turn\n");
+  printf("\n");
+
   *width = w;
   *height = h;
   *n_player = np;
@@ -191,7 +228,7 @@ int command_check(const char *input)
     return 0;
   }
 
-  if (strcmp(token, "Quit") == 0)
+  if (strcmp(token, "QUIT") == 0)
   {
     free(cp);
     return 1;
@@ -275,124 +312,141 @@ void player_init(player_t *p, const int *n, const int *progress)
 
     if (*n == 2)
     {
-      player_t *Green = (player_t *)malloc(sizeof(player_t));
-      Green->colour = 'Green\0';
+      player_t *Green = (player_t *)malloc(sizeof(struct player_t));
+      Green->colour = "Green\0";
       Green->grids_owned = 0;
+      Green->next = NULL;
+      Green->prev = NULL;
 
-      appened(p, Green);
-      appened(Green, p);
+      appened(&p, &Green);
+      appened(&Green, &p);
     }
     if (*n >= 3)
     {
       player_t *Green = (player_t *)malloc(sizeof(player_t));
-      Green->colour = 'Green\0';
+      Green->colour = "Green\0";
       Green->grids_owned = 0;
+      Green->next = NULL;
+      Green->prev = NULL;
 
       player_t *Purple = (player_t *)malloc(sizeof(player_t));
-      Purple->colour = 'Purple\0';
+      Purple->colour = "Purple\0";
       Purple->grids_owned = 0;
+      Purple->next = NULL;
+      Purple->prev = NULL;
 
-      appened(p, Green);
-      appened(Green, Purple);
-      appened(Purple, p);
+      appened(&p, &Green);
+      appened(&Green, &Purple);
+      appened(&Purple, &p);
     }
     if (*n == 4)
     {
       player_t *Green = (player_t *)malloc(sizeof(player_t));
-      Green->colour = 'Green\0';
+      Green->colour = "Green\0";
       Green->grids_owned = 0;
+      Green->next = NULL;
+      Green->prev = NULL;
 
       player_t *Purple = (player_t *)malloc(sizeof(player_t));
-      Purple->colour = 'Purple\0';
+      Purple->colour = "Purple\0";
       Purple->grids_owned = 0;
+      Purple->next = NULL;
+      Purple->prev = NULL;
 
       player_t *Blue = (player_t *)malloc(sizeof(player_t));
-      Blue->colour = 'Blue\0';
+      Blue->colour = "Blue\0";
       Blue->grids_owned = 0;
+      Blue->next = NULL;
+      Blue->prev = NULL;
 
-      appened(p, Green);
-      appened(Green, Purple);
-      appened(Purple, Blue);
-      appened(Blue, p);
+      appened(&p, &Green);
+      appened(&Green, &Purple);
+      appened(&Purple, &Blue);
+      appened(&Blue, &p);
     }
     if (*n == 5)
     {
 
       player_t *Green = (player_t *)malloc(sizeof(player_t));
-      Green->colour = 'Green\0';
+      Green->colour = "Green\0";
       Green->grids_owned = 0;
+      Green->next = NULL;
+      Green->prev = NULL;
 
       player_t *Purple = (player_t *)malloc(sizeof(player_t));
-      Purple->colour = 'Purple\0';
+      Purple->colour = "Purple\0";
       Purple->grids_owned = 0;
+      Purple->next = NULL;
+      Purple->prev = NULL;
 
       player_t *Blue = (player_t *)malloc(sizeof(player_t));
-      Blue->colour = 'Blue\0';
+      Blue->colour = "Blue\0";
       Blue->grids_owned = 0;
+      Blue->next = NULL;
+      Blue->prev = NULL;
 
       player_t *Yellow = (player_t *)malloc(sizeof(player_t));
-      Yellow->colour = 'Yellow\0';
+      Yellow->colour = "Yellow\0";
       Yellow->grids_owned = 0;
+      Yellow->next = NULL;
+      Yellow->prev = NULL;
 
-      appened(p, Green);
-      appened(Green, Purple);
-      appened(Purple, Blue);
-      appened(Blue, Yellow);
-      appened(Yellow, p);
+      appened(&p, &Green);
+      appened(&Green, &Purple);
+      appened(&Purple, &Blue);
+      appened(&Blue, &Yellow);
+      appened(&Yellow, &p);
     }
 
     if (*n == 6)
     {
 
       player_t *Green = (player_t *)malloc(sizeof(player_t));
-      Green->colour = 'Green\0';
+      Green->colour = "Green\0";
       Green->grids_owned = 0;
+      Green->next = NULL;
+      Green->prev = NULL;
 
       player_t *Purple = (player_t *)malloc(sizeof(player_t));
-      Purple->colour = 'Purple\0';
+      Purple->colour = "Purple\0";
       Purple->grids_owned = 0;
+      Purple->next = NULL;
+      Purple->prev = NULL;
 
       player_t *Blue = (player_t *)malloc(sizeof(player_t));
-      Blue->colour = 'Blue\0';
+      Blue->colour = "Blue\0";
       Blue->grids_owned = 0;
+      Blue->next = NULL;
+      Blue->prev = NULL;
 
       player_t *Yellow = (player_t *)malloc(sizeof(player_t));
-      Yellow->colour = 'Yellow\0';
+      Yellow->colour = "Yellow\0";
       Yellow->grids_owned = 0;
+      Yellow->next = NULL;
+      Yellow->prev = NULL;
 
       player_t *White = (player_t *)malloc(sizeof(player_t));
-      White->colour = 'White\0';
+      White->colour = "White\0";
       White->grids_owned = 0;
+      White->next = NULL;
+      White->prev = NULL;
 
-      appened(p, Green);
-      appened(Green, Purple);
-      appened(Purple, Blue);
-      appened(Blue, Yellow);
-      appened(Yellow, White);
-      appened(White, p);
+      appened(&p, &Green);
+      appened(&Green, &Purple);
+      appened(&Purple, &Blue);
+      appened(&Blue, &Yellow);
+      appened(&Yellow, &White);
+      appened(&White, &p);
     }
   }
 }
-void appened(player_t *head, player_t *n)
+void appened(player_t **head, player_t **n)
 {
-  if (head->next == NULL)
-  {
-    head->next = n;
-    n->prev = head;
-  }
-  else
-  {
-    player_t *temp;
-    temp = head->next;
-    head->next = n;
-    n->prev = head;
-    n->next = temp;
-  }
+  (*head)->next = *n;
+  (*n)->prev = *head;
 }
 
-void move_list_appened();
-
-void place(player_t *curr, char *input, char *b, int *width, int *height, opd_grid *grid_po, opd_grid *g_list, move_list *m_list)
+void place(player_t **curr, char *input, int *width, int *height, grid_t **board, int *move_made, int *n_player, int *progress)
 {
   int array[2];
   int w, h;
@@ -429,99 +483,392 @@ void place(player_t *curr, char *input, char *b, int *width, int *height, opd_gr
 
   w = array[0];
   h = array[1];
-
-  if (w < 0 || w > *width || h < 0 || h > *height)
+  if (w < 0 || h < 0 || w >= *width || h >= *height)
   {
-    printf("Invalid Coordinates\n");
+    printf("Invalid Coordiates\n");
+    return;
+  }
+  if (*progress == 0)
+  {
+    printf("Ganme Not In Progress\n");
+    printf("\n");
     return;
   }
 
-  if (b[h][w] == 'n')
+  if (board[h][w].owner == NULL)
   {
-    b[h][w] = 'y';
-    grid_t *new_grid = malloc(sizeof(grid_t));
-    new_grid->owner = curr;
-    if (((h == 0) && (w == 0)) || ((h == height - 1) && (w == width - 1)) || ((h == 0) && (w == width - 1)) || ((h == height - 1) && (w == 0)))
-    {
-      new_grid->limit = 2;
-    }
-    else if (h == 0 || h == height - 1 || w == 0 || w == width - 1)
-    {
-      new_grid->limit = 3;
-    }
-    else
-    {
-      new_grid->limit = 4;
-    }
-
-    new_grid->atom_count = 1;
-    opd_grid new_opd = (opd_grid *)malloc(sizeof(opd_grid));
-    new_opd->current = new_grid;
-    new_grid->x = w;
-    new_grid->y = h;
-    grid_po->next = new_opd;
-    grid_po = new_opd;
-
-    curr->girds_owned += 1;
-
-    move_t *new_move = malloc(sizeof(move_t));
-    new_move->x = w;
-    new_move->y = y;
-    new_move->old_owner = current;
-    new_move->is_expand = 'n';
-    move_list new_m = (move_list *)malloc(sizeof(move_list));
-    new_m->current = new_move;
-    m_list->next = new_m;
-    m_list = new_m;
+    board[h][w].owner = *curr;
+    board[h][w].atom_count++;
+    (*curr)->grids_owned++;
+  }
+  else if (board[h][w].owner != *curr)
+  {
+    printf("Cannot Place Atom Here\n");
+    return;
+  }
+  else if (board[h][w].limit > (board[h][w].atom_count + 1))
+  {
+    board[h][w].atom_count++;
   }
   else
   {
-    opd_grind *temp = g_list;
-    while (1)
+    board[h][w].atom_count = 0;
+    board[h][w].owner = NULL;
+    (*curr)->grids_owned--;
+    if (w == 0 && h == 0)
     {
-      if (temp->current->x == w && temp->current->y == h)
+      expand(w + 1, h, board, *curr, width, height);
+      expand(w, h + 1, board, *curr, width, height);
+    }
+    else if (w == *width - 1 && h == *height - 1)
+    {
+      expand(w, h - 1, board, *curr, width, height);
+      expand(w - 1, h, board, *curr, width, height);
+    }
+    else if (w == *width - 1 && h == 0)
+    {
+      expand(w, h + 1, board, *curr, width, height);
+      expand(w - 1, h, board, *curr, width, height);
+    }
+    else if (w == 0 && h == *height - 1)
+    {
+      expand(w, h - 1, board, *curr, width, height);
+      expand(w + 1, h, board, *curr, width, height);
+    }
+    else if (h == 0 && w != 0 && w != *width - 1)
+    {
+      expand(w + 1, h, board, *curr, width, height);
+      expand(w, h + 1, board, *curr, width, height);
+      expand(w - 1, h, board, *curr, width, height);
+    }
+    else if (h == *height - 1 && w != 0 && w != *width - 1)
+    {
+      expand(w, h - 1, board, *curr, width, height);
+      expand(w + 1, h, board, *curr, width, height);
+      expand(w - 1, h, board, *curr, width, height);
+    }
+    else if (w == 0 && h != 0 && h != *height - 1)
+    {
+      expand(w, h - 1, board, *curr, width, height);
+      expand(w + 1, h, board, *curr, width, height);
+      expand(w, h + 1, board, *curr, width, height);
+    }
+    else if (w == *width - 1 && h != *height - 1 && h != 0)
+    {
+      expand(w, h - 1, board, *curr, width, height);
+      expand(w, h + 1, board, *curr, width, height);
+      expand(w - 1, h, board, *curr, width, height);
+    }
+    else
+    {
+      expand(w, h - 1, board, *curr, width, height);
+      expand(w + 1, h, board, *curr, width, height);
+      expand(w, h + 1, board, *curr, width, height);
+      expand(w - 1, h, board, *curr, width, height);
+    }
+  }
+  *move_made += 1;
+  /*for ( int i = 0; i < *move_made; i++ )
+  {
+    *curr = (*curr)->next;
+  }*/
+
+  int out_player = 0; // number of player doesn't own any grids
+  if (*move_made <= *n_player)
+  {
+    (*curr) = (*curr)->next;
+    printf("%s's Turn\n", (*curr)->colour);
+    printf("\n");
+  }
+  else
+  {
+    player_t *temp = *curr;
+    do
+    {
+      if (temp->grids_owned <= 0)
       {
-        if (temp->current->owner == curr)
+        out_player++;
+      }
+      temp = temp->next;
+    } while (temp != *curr);
+    if (out_player >= *n_player - 1)
+    {
+      printf("%s Wins!\n", (*curr)->colour);
+      exit(0);
+    }
+    temp = (*curr)->next;
+    for (int i = 0; i < *n_player; i++)
+    {
+      if (temp->grids_owned > 0)
+      {
+        printf("%s's Turn\n", temp->colour);
+        printf("\n");
+        (*curr) = temp;
+        return;
+      }
+    }
+  }
+}
+
+void expand(int w, int h, grid_t **board, player_t *curr, int *width, int *height)
+{
+  if (board[h][w].owner == NULL)
+  {
+    board[h][w].owner = curr;
+    board[h][w].atom_count++;
+    curr->grids_owned++;
+  }
+  else if (board[h][w].owner == curr && board[h][w].limit > (board[h][w].atom_count + 1))
+  {
+    board[h][w].atom_count++;
+  }
+  else if (board[h][w].owner != curr && board[h][w].limit > (board[h][w].atom_count + 1))
+  {
+    board[h][w].owner->grids_owned--;
+    board[h][w].owner = curr;
+    board[h][w].atom_count = 1;
+  }
+  else
+  {
+    board[h][w].owner->grids_owned--;
+    board[h][w].owner = NULL;
+    board[h][w].atom_count = 0;
+    if (w == 0 && h == 0)
+    {
+      expand(w + 1, h, board, curr, width, height);
+      expand(w, h + 1, board, curr, width, height);
+    }
+    else if (w == *width - 1 && h == *height - 1)
+    {
+      expand(w, h - 1, board, curr, width, height);
+      expand(w - 1, h, board, curr, width, height);
+    }
+    else if (w == *width - 1 && h == 0)
+    {
+      expand(w, h + 1, board, curr, width, height);
+      expand(w - 1, h, board, curr, width, height);
+    }
+    else if (w == 0 && h == *height - 1)
+    {
+      expand(w, h - 1, board, curr, width, height);
+      expand(w + 1, h, board, curr, width, height);
+    }
+    else if (h == 0 && w != 0 && w != *width - 1)
+    {
+      expand(w + 1, h, board, curr, width, height);
+      expand(w, h + 1, board, curr, width, height);
+      expand(w - 1, h, board, curr, width, height);
+    }
+    else if (h == *height - 1 && w != 0 && w != *width - 1)
+    {
+      expand(w, h - 1, board, curr, width, height);
+      expand(w + 1, h, board, curr, width, height);
+      expand(w - 1, h, board, curr, width, height);
+    }
+    else if (w == 0 && h != 0 && h != *height - 1)
+    {
+      expand(w, h - 1, board, curr, width, height);
+      expand(w + 1, h, board, curr, width, height);
+      expand(w, h + 1, board, curr, width, height);
+    }
+    else if (w == *width - 1 && h != *height - 1 && h != 0)
+    {
+      expand(w, h - 1, board, curr, width, height);
+      expand(w, h + 1, board, curr, width, height);
+      expand(w - 1, h, board, curr, width, height);
+    }
+    else
+    {
+      expand(w, h - 1, board, curr, width, height);
+      expand(w + 1, h, board, curr, width, height);
+      expand(w, h + 1, board, curr, width, height);
+      expand(w - 1, h, board, curr, width, height);
+    }
+  }
+}
+
+grid_t **board_alloc(int w, int h)
+{
+  grid_t **board;
+  board = malloc(h * sizeof(grid_t));
+  for (int i = 0; i < h; i++)
+  {
+    board[i] = malloc(w * sizeof(grid_t));
+  }
+  return board;
+}
+
+void board_init(grid_t **board, int *width, int *height)
+{
+  for (int i = 0; i < *height; i++)
+  {
+    for (int j = 0; j < *width; j++)
+    {
+      board[i][j].owner = NULL;
+      board[i][j].atom_count = 0;
+      if (i == 0 && j == 0)
+      {
+        board[i][j].limit = 2;
+      }
+      else if (i == *height - 1 && j == *width - 1)
+      {
+        board[i][j].limit = 2;
+      }
+      else if (i == 0 && j == *width - 1)
+      {
+        board[i][j].limit = 2;
+      }
+      else if (i == *height - 1 && j == 0)
+      {
+        board[i][j].limit = 2;
+      }
+      else if (i == 0 && j != 0 && j != *width - 1)
+      {
+        board[i][j].limit = 3;
+      }
+      else if (i == *height - 1 && j != 0 && j != *width - 1)
+      {
+        board[i][j].limit = 3;
+      }
+      else if (j == 0 && i != 0 && i != *height - 1)
+      {
+        board[i][j].limit = 3;
+      }
+      else if (j == *width - 1 && i != *height - 1 && i != 0)
+      {
+        board[i][j].limit = 3;
+      }
+      else
+      {
+        board[i][j].limit = 4;
+      }
+    }
+  }
+}
+
+void display(grid_t **board, int *width, int *height)
+{
+  printf("\n");
+  print_bound(width);
+  for (int i = 0; i < *height; i++)
+  {
+    printf("|");
+    for (int j = 0; j < *width; j++)
+    {
+      if (board[i][j].owner != NULL)
+      {
+        printf("%c%d", board[i][j].owner->colour[0], board[i][j].atom_count);
+      }
+      else
+      {
+        printf("  ");
+      }
+      printf("|");
+    }
+    printf("\n");
+  }
+  print_bound(width);
+  printf("\n");
+}
+
+void print_bound(int *width)
+{
+  printf("+");
+  for (int i = 0; i < (*width) * 3 - 1; i++)
+  {
+    printf("-");
+  }
+  printf("+\n");
+}
+
+void stats(char *input, player_t *current, int progress, int n_player, int move_made)
+{
+  char *token;
+  token = strtok(input, " ");
+  token = strtok(NULL, " ");
+  if (token != NULL)
+  {
+    printf("\n");
+    printf("Invalid Aruguments\n");
+    printf("\n");
+    return;
+  }
+  else if (progress == 0)
+  {
+    printf("\n");
+    printf("Game Not in Progress\n");
+    printf("\n");
+    return;
+  }
+  else
+  {
+    for (int i = 0; i < n_player; i++)
+    {
+      printf("Player %s:\n", current->colour);
+      if (current->grids_owned <= 0)
+      {
+        if (move_made <= n_player)
         {
-          if (temp->current->atom_count != limit - 1)
-          {
-            temp->current->atom_count++;
-          }
-          else
-          {
-            temp->current->atom_count = 0;
-            temp->grid->
-            move_t *new_move = (move_t *)malloc(sizeof(move_t));
-            new_move->x = w;
-            new_move->y = h;
-            new_move->is_expand = 'y';
-            move_list new_m = (move_list *)malloc(sizeof(move_list));
-            new_m->current = new_move;
-            m_list->next = new_m;
-            m_list = new_m;
-            expand();
-          }
-          break;
+          printf("Grid Count: %d\n", current->grids_owned);
+          printf("\n");
         }
         else
         {
-          printf("Cannot Place Atom Here\n");
-          return;
+          printf("Lost\n");
+          printf("\n");
         }
       }
       else
       {
-        temp = temp->next;
+        printf("Grid Count: %d\n", current->grids_owned);
+        printf("\n");
       }
+      current = current->next;
     }
   }
-  current = current->next;
-  printf("%s's Turn\n'", curent->colour);
 }
 
-void expand(int w, int h, opd_grid *grid_po, move_list *m)
+void load( char *input, int *progress, int *n_player, grid_t **board, player_t **current, int *width, int *height)
 {
-  if ()
+  char *token;
+  token = strtok(input, " ");
+  token = strtok(NULL, " ");
+  if ( token == NULL )
   {
+    printf("Missing Arguments\n");
+    printf("\n");
+    return;
+  }
+  else
+  {
+    FILE *fp;
+    fp = fopen(token, "r");
+    if ( fp == NULL )
+    {
+      printf("Cannot Load Save\n");
+      printf("\n");
+      return;
+    }
+    else if( *progress == 1 )
+    {
+      printf("Restart Application To Load Save\n");
+      printf("\n");
+      return;
+    }
+    else
+    {
+      fread(width, 3, 1, fp);
+      fread(height, 3, 1, fp);
+      fread(n_player, 1 ,1 ,fp);
+      player_init(*current, n_player, progress );
+      board = board_alloc(*width, *height);
+      board_init(board,width, height);
+      fclose(fp);
+      *progress = 1;
+      printf("Game Loaded\n");
+      printf("\n");
+      printf("Game Ready\n");
+      printf("%s Turn\n", (*current)->colour);
+    }
   }
 }
