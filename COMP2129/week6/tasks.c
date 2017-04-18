@@ -3,9 +3,11 @@
 
 #include "list.h"
 
-int main(void) {
-
-	// ...
+int main() 
+{
+	FILE*fp = fopen("tasks.text", "r");
+	
+	
 
 	return 0;
 }
