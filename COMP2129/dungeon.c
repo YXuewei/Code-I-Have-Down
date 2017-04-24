@@ -5,7 +5,7 @@
 typedef struct room room;
 struct room
 {
-    char *name;
+    char name[100];
     room *N;
     room *S;
     room *E;
@@ -21,11 +21,14 @@ struct list
 list* rlist;
 int count = 0;
 room *current_room;
+int set_start = 0;
+
 void append(list *a, list *b);
 void take_command(char *comm);
 int command_check(char *comm);
-void print_room(room *r);
+void print_room();
 void redirection(int dir);
+
 int main(int argc, char **argv)
 {
 	rlist = malloc( sizeof ( struct list ));
@@ -34,6 +37,7 @@ int main(int argc, char **argv)
     fp = fopen(argv[1], "r");
     if (fp == NULL)
     {
+		//perror("Error");
 		printf("No Level File Specified\n");
 		free(rlist);
 		return 1;
@@ -50,12 +54,18 @@ int main(int argc, char **argv)
 		r_temp->S = NULL;
 		r_temp->E = NULL;
 		r_temp->W = NULL;
-	//finished intialize of room
+		//finished intialize of room
 		temp->curr = r_temp;
-		r_temp->name = token;
-		if (strcmp(token, "START") == 0)
+		int ln = strlen( token );
+		if ( token[ln - 1 ] == '\n')
+		{
+			token[ln - 1 ] = '\0';
+		}
+		strcpy(r_temp->name, token );
+		if ( set_start == 0 )
 		{
 		    current_room = r_temp;
+			set_start = 1;
 		}
 		append(rlist, temp);
 		rlist = temp;
@@ -68,7 +78,7 @@ int main(int argc, char **argv)
     {
 		fgets(input, 8192, fp);
 		token = strtok(input, " > ");
-		list *temp = warden->next;
+		list* temp = warden->next;
 		for (int i = 0; i < count; i++)
 		{
 		    if (strcmp(temp->curr->name, token) != 0)
@@ -87,10 +97,12 @@ int main(int argc, char **argv)
 		}
 		char direction = token[0];
 		token = strtok(NULL, " > ");
-		list *temp2 = warden->next;
+		int nl = strlen( token );
+		token[ nl - 1 ] = '\0';
+		list* temp2 = warden->next;
 		for (int i = 0; i < count; i++)
 		{
-		    if (strcmp(temp2->curr->name, token) != 0)
+			if (strcmp(temp2->curr->name, token )!= 0)
 		    {
 				temp2 = temp2->next;
 		    }
@@ -118,7 +130,8 @@ int main(int argc, char **argv)
  	}
 
 	    char command[100];
-	    while (1)
+	 print_room();   
+		while (1)
 	    {
 		take_command(command);
 		int comm = command_check(command);
@@ -128,20 +141,23 @@ int main(int argc, char **argv)
 		    return 0;
 		case 1:
 		    redirection(1);
-		    print_room(current_room);
+		    print_room();
 		    break;
 		case 2:
 		    redirection(2);
-		    print_room(current_room);
+		    print_room();
+			break;
 		case 3:
 		    redirection(3);
-		    print_room(current_room);
+		    print_room();
+			break;
 		case 4:
 		    redirection(4);
-		    print_room(current_room);
+		    print_room();
+			break;
 		default:
 		    printf("What?\n");
-		    print_room(current_room);
+		    print_room();
 		    break;
 		}
 	    }
@@ -186,11 +202,11 @@ int command_check(char *command)
     {
 		return 2;
     }
-    else if (strcmp(command, "EAST") == 0)
+    else if (strcmp(command, "WEST") == 0)
     {
 		return 3;
     }
-    else if (strcmp(command, "WEST") == 0)
+    else if (strcmp(command, "EAST") == 0)
     {
 		return 4;
     }
@@ -204,14 +220,15 @@ int command_check(char *command)
     }
 }
 
-void print_room(room *r)
+void print_room()
 {
-    printf("\n%s\n", r->name);
+	printf("\n");
+	printf("%s\n", current_room->name);
     printf(" ");
     for (int i = 0; i < 7; i++)
     {
 	//printf("-");
-		if (i == 3 && r->N != NULL)
+		if (i == 3 && current_room->N != NULL)
 		{
 		    printf("N");
 		}
@@ -224,7 +241,7 @@ void print_room(room *r)
 
     for (int i = 0; i < 5; i++)
     {
-		if (i == 2 && r->W != NULL)
+		if (i == 2 && current_room->W != NULL)
 		{
 		    printf("W");
 		}
@@ -236,9 +253,9 @@ void print_room(room *r)
 		{
 		    printf(" ");
 		}	
-		if (i == 2 && r->E != NULL)
+		if (i == 2 && current_room->E != NULL)
 		{
-		    printf("E");
+		    printf("E\n");
 		}
 		else
 		{
@@ -249,7 +266,7 @@ void print_room(room *r)
     printf(" ");
     for (int i = 0; i < 7; i++)
     {
-		if (i == 3 && r->N != NULL)
+		if (i == 3 && current_room->S != NULL)
 		{
 		    printf("S");
 		}
@@ -303,7 +320,7 @@ void redirection(int dir) // 1N | 2S | 3W | 4E
 		}
 		else
 		{
-	    printf("No Path This Way\n");
+	   		printf("No Path This Way\n");
 		}
 		return;
 	    }
