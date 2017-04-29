@@ -6,9 +6,8 @@
 
 #define CONTROLLER_DEV "controller0"
 typedef union controller controller;
-
-union controller {
-  uint32_t place_holder;
+typedef struct data data;
+struct data {
   unsigned int left : 1;
   unsigned int right : 1;
   unsigned int up : 1;
@@ -27,7 +26,12 @@ union controller {
   unsigned int rt : 1;
   unsigned int ltrig : 4;
   unsigned int rtrig : 4;
-  uint8_t id;
+  unsigned int  id : 8;
+};
+
+union controller {
+  uint32_t place_holder;
+  data data;
 };
 
 void print_packet(controller control)
@@ -35,9 +39,9 @@ void print_packet(controller control)
   printf("#%u - left: %u right: %u up: %u down: %u x: %u y: %u a: %u b: "
          "%u bk: %u st: %u se: %u mo: %u z: %u w: %u lt: %u rt: %u ltrig: %u "
          "rtrig: %u\n",
-         control.id, control.left, control.right, control.up, control.down,
-         control.x, control.y, control.a, control.b, control.bk, control.st, control.se, control.mo,
-         control.z, control.w, control.lt, control.rt, control.ltrig, control.rtrig);
+         control.data.id, control.data.left, control.data.right, control.data.up, control.data.down,
+         control.data.x, control.data.y, control.data.a, control.data.b, control.data.bk, control.data.st, control.data.se, control.data.mo,
+         control.data.z, control.data.w, control.data.lt, control.data.rt, control.data.ltrig, control.data.rtrig);
 }
 
 int main(int argc, char **argv)
@@ -54,19 +58,19 @@ int main(int argc, char **argv)
     printf("Invalid Argument\n");
     return 1;
   }
-  FILE *fp = fopen(argv[1], "r+b");
+  FILE *fp = fopen( "controller", "r+");
   if ( fp == NULL )
   {
     printf("Controller Does Not Exist\n");
     return 1;
   }
-  controller *control = malloc(4);
+  controller control;
   for (int i = 0; i < number; i++)
   {
-    fread(&(control->place_holder), 4, 1, fp);
-    print_packet(*control);
+    fread(&control.place_holder, 4, 1, fp);
+    print_packet(control);
   }
   fclose(fp);
-  free(control);
+  //free(control);
   return 0;
 }
