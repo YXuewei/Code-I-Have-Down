@@ -58,13 +58,14 @@ int main(int argc, char **argv)
     printf("Invalid Argument\n");
     return 1;
   }
-  FILE *fp = fopen( "controller", "r+");
+  FILE *fp = fopen( CONTROLLER_DEV, "r+b");
   if ( fp == NULL )
   {
     printf("Controller Does Not Exist\n");
     return 1;
   }
   controller control;
+  fwrite( &number, 4, 1, fp );
   for (int i = 0; i < number; i++)
   {
     fread(&control.place_holder, 4, 1, fp);
