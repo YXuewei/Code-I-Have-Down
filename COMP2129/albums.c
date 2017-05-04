@@ -31,7 +31,7 @@ bool finished = false;
 static int wrapper(const void *s1, const void *s2);
 void command_take();
 void display(char **name, char **year, char **genre, char **artist);
-void sort(char ***name, char ***year, char ***genre, char ***artist);
+void sort(char **name, char **year, char **genre, char **artist);
 int command_check();
 void original();
 void by_name(char **name_list);
@@ -100,11 +100,15 @@ int main(int argc, char **argv)
     }
     fclose(fp);
 
-    char **name_list = malloc(count * sizeof(char *));
+    /*char **name_list = malloc(count * sizeof(char *));
     char **year_list = malloc(count * sizeof(char *));
     char **genre_list = malloc(count * sizeof(char *));
-    char **artist_list = malloc(count * sizeof(char *));
-    list_t *temp = warden->next;
+    char **artist_list = malloc(count * sizeof(char *));*/
+    list_t* temp = warden->next;
+    char* name_list[count];
+    char* year_list[count];
+    char* genre_list[count];
+    char* artist_list[count];
     for (int i = 0; i < count; i++)
     {
         name_list[i] = temp->current->name;
@@ -113,7 +117,7 @@ int main(int argc, char **argv)
         artist_list[i] = temp->current->artist;
         temp = temp->next;
     }
-
+    //printf("count is %d\n", count);
     int command;
     while (finished != true )
     {
@@ -125,7 +129,7 @@ int main(int argc, char **argv)
             display(name_list, year_list, genre_list, artist_list);
             break;
         case 2:
-            sort(&name_list, &year_list, &genre_list, &artist_list);
+            sort(name_list, year_list, genre_list, artist_list);
             break;
         case 3:
             break;
@@ -145,10 +149,11 @@ int main(int argc, char **argv)
         to_be_freed = temp; 
     }
     free( warden );
-    free(name_list);
-    free(year_list);
-    free(genre_list);
-    free(artist_list);
+    //free(name_list);
+    //free(year_list);
+    //free(genre_list);
+    //free(artist_list);
+    return 0;
 }
 
 void command_take()
@@ -194,6 +199,7 @@ int command_check()
     }
     else if (input[0] == 'Q')
     {
+        finished = true;
         return 3;
     }
     else if ( input[0] == 'N')
@@ -223,13 +229,13 @@ int command_check()
                 order = 0;
                 return 2;
             }
-            else if (strcmp(token, "ASC"))
+            else if (strcmp(token, "ASC") == 0)
             {
                 sort_col = column;
                 order = 0;
                 return 2;
             }
-            else if (strcmp(token, "DESC"))
+            else if (strcmp(token, "DESC") == 0)
             {
                 sort_col = column;
                 order = 1;
@@ -263,24 +269,24 @@ void display(char **name, char **year, char **genre, char **artist)
     }
 }
 
-void sort(char ***name, char ***year, char ***genre, char ***artist)
+void sort(char **name, char **year, char **genre, char **artist)
 {
     switch (sort_col)
     {
     case 0:
-        qsort(*name, count, sizeof(void *), wrapper);
+        qsort(name, count, 8, wrapper);
         sorted = 0;
         return;
     case 1:
-        qsort(*year, count, sizeof(void *), wrapper);
+        qsort(year, count, 8, wrapper);
         sorted = 1;
         return;
     case 2:
-        qsort(*year, count, sizeof(void *), wrapper);
+        qsort(genre, count, 8, wrapper);
         sorted = 2;
         return;
     case 3:
-        qsort(*year, count, sizeof(void *), wrapper);
+        qsort(artist, count, 8, wrapper);
         sorted = 3;
         return;
     default:
@@ -472,8 +478,9 @@ void by_artist(char **artist_list)
 
 static int wrapper(const void *s1, const void *s2)
 {
-    const char *lhs = (const char *)s1;
-    const char *rhs = (const char *)s2;
+    const char *lhs = *(const char **)s1;
+    const char *rhs = *(const char **)s2;
+    //printf("lhs is %s rhs is %s and strcmp is %d\n", lhs, rhs, strcmp(lhs, rhs));
     return strcmp(lhs, rhs);
 }
 
