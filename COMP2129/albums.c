@@ -42,8 +42,6 @@ void appened(list_t *a, list_t *b);
 
 int main(int argc, char **argv)
 {
-    //printf("reached here0\n")
-    //printf("reached here1\n");
     list = malloc(sizeof(struct list_t));
     list->next = NULL;
     list->prev = NULL;
@@ -54,7 +52,6 @@ int main(int argc, char **argv)
         return (1);
     }
 
-    //printf("reached here2\n");
     FILE *fp;
     fp = fopen(argv[1], "r");
     if (fp == NULL)
@@ -63,16 +60,9 @@ int main(int argc, char **argv)
         return (1);
     }
     int len;
-    //char c;
     while (feof(fp) == 0)
     {
         fscanf(fp, "%[^\n]\n", input);
-        //int len = 0;
-        /*while( (c = fgetc(fp) ) != '\n' )
-        {
-            input[len] = c;
-            len++;
-        }*/
         len = strlen(input);
         if (input[len - 1] == '\n')
         {
@@ -88,7 +78,6 @@ int main(int argc, char **argv)
         strcpy(new->genre, token);
         token = strtok(NULL, ",");
         strcpy(new->artist, token);
-        //printf("%d %lu\n",count, sizeof( list ) );
         list_t *temp = malloc(sizeof(list_t));
         temp->next = NULL;
         temp->prev = NULL;
@@ -96,14 +85,9 @@ int main(int argc, char **argv)
         appened(list, temp);
         list = temp;
         count++;
-        //printf("reached here\n");
     }
     fclose(fp);
 
-    /*char **name_list = malloc(count * sizeof(char *));
-    char **year_list = malloc(count * sizeof(char *));
-    char **genre_list = malloc(count * sizeof(char *));
-    char **artist_list = malloc(count * sizeof(char *));*/
     list_t* temp = warden->next;
     char* name_list[count];
     char* year_list[count];
@@ -117,7 +101,6 @@ int main(int argc, char **argv)
         artist_list[i] = temp->current->artist;
         temp = temp->next;
     }
-    //printf("count is %d\n", count);
     int command;
     while (finished != true )
     {
@@ -134,7 +117,6 @@ int main(int argc, char **argv)
         case 3:
             break;
         default:
-            //printf("Invalid Command\n");
             break;
         }
     }
@@ -149,10 +131,6 @@ int main(int argc, char **argv)
         to_be_freed = temp; 
     }
     free( warden );
-    //free(name_list);
-    //free(year_list);
-    //free(genre_list);
-    //free(artist_list);
     return 0;
 }
 
@@ -177,22 +155,11 @@ void command_take()
     {
         finished = true;
     }
-    //fflush(stdin);
-    //input[0] = 'C';
-    //scanf( "%20[^\n]", input);
 }
 
 int command_check()
 {
     char *token;
-    // char cp[20];
-    //for ( int i = 0; i < strlen(input); i++ )
-    //{
-    //   cp[i] = input[i];
-    //}
-
-    //if (token == NULL)
-    //{
     if (input[0] == 'D')
     {
         return 1;
@@ -203,10 +170,9 @@ int command_check()
         return 3;
     }
     else if ( input[0] == 'N')
+    {
         return -1;
-    //}
-    //else
-    //{
+    }
     else
     {
         token = strtok(input, " ");
@@ -243,7 +209,6 @@ int command_check()
             }
         }
     }
-    //}
     return -1;
 }
 
@@ -480,7 +445,6 @@ static int wrapper(const void *s1, const void *s2)
 {
     const char *lhs = *(const char **)s1;
     const char *rhs = *(const char **)s2;
-    //printf("lhs is %s rhs is %s and strcmp is %d\n", lhs, rhs, strcmp(lhs, rhs));
     return strcmp(lhs, rhs);
 }
 
