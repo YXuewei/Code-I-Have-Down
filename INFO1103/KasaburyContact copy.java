@@ -72,6 +72,8 @@ public class KasaburyContact
 	protected String lname;
 	protected String pnumber;
 	protected int messageNumber;
+	protected int oldest;
+	protected int newest;
 
 
 	public KasaburyContact(String fname, String lname, String pnumber) {
@@ -81,6 +83,8 @@ public class KasaburyContact
 		this.lname = lname;
 		this,pnumber = pnumber;
 		this.messageNumber = 0;
+		this.oldest = 0;
+		this.newest = 0;
 	}
 
 	public String getFirstName() {
@@ -163,13 +167,30 @@ public class KasaburyContact
 			if ( this.messageNumber >= 20 )
 			{
 				this.messageNumber = 20;
+				if ( this.newest >= 19 )
+				{
+					this.newest = 0;
+				}else
+				{
+					this.newest++;
+				}
+				if ( this.oldest >= 19)
+				{
+					this.oldest = 0;
+				}
+				else
+				{
+					this.oldest++;
+				}
+
 			}
 			this.chatHisotry[0] = who.toString(); 
 			return;
 		}
 		else
 		{
-			chatHisotry[messageNumber - 1] = who.toString();
+			this.chatHisotry[messageNumber - 1] = who.toString();
+			this.newest = messageNumber - 1;
 			return;
 		}
 	}
@@ -182,13 +203,15 @@ public class KasaburyContact
 		{
 			chatHistory[i] = NULL;
 		}
+		this.oldest = 0;
+		this.newest = 0;
 	}
 
 	/* returns the last message this contact sent
 	 * if no messages, returns null
 	 */
 	public String getLastMessage() {
-		return this.chatHistory[ this.messageNumber - 1];
+		return this.chatHistory[ this.newest ];
 	}
 
 	/* returns the oldest message in the chat history
@@ -198,7 +221,7 @@ public class KasaburyContact
 	 * returns null if no messages exist
 	 */
 	public String getOldestMessage() {
-		return this.chatHistory[0];
+		return this.chatHistory[ oldest ];
 	}
 
 
