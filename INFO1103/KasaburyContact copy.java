@@ -81,7 +81,7 @@ public class KasaburyContact
 		chatHistory = new String[20];
 		this.fname = fname;
 		this.lname = lname;
-		this,pnumber = pnumber;
+		this.pnumber = pnumber;
 		this.messageNumber = 0;
 		this.oldest = 0;
 		this.newest = 0;
