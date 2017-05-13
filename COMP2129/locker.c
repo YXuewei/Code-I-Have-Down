@@ -15,6 +15,7 @@ void delete();
 void query( int);
 void lock( int );
 void attach(int );
+void handler(int );
 
 int id;
 char input[50];
@@ -22,6 +23,10 @@ int count = 0;
 int num;
 pid_t prc[100];
 queue_t queue;
+int sig;
+locker_t locker;
+int* p2c[100];
+int* c2p[100];
 
 int main()
 {
@@ -60,7 +65,7 @@ int main()
                 break;
             case 9:
                 quit = true;
-                break;
+                return;
             case 0:
                 printf("Invalid Command\n");
                 break;
@@ -170,6 +175,13 @@ int ccheck()
 
 void create()
 {
+    count++;
+    int pipefd[2];
+    int pipefd2[2];
+    pipe( pipefd );
+    pipe( pipefd2 );
+    p2c[count] = pipefd;
+    c2p[count] = pipefd2;
     pid_t pid = fork();
     if ( pid < 0 )
     {
@@ -177,15 +189,79 @@ void create()
     }
     else if ( pid == 0 )
     {
-        locker_t *locker = malloc( sizeof( struct lokcer_t ) );
-        locker->id = count+1;
-        locker->user_id = -1;
-        locker->owned = 0; // 0 is not 1 is yes
+        signal( SIGUSR1, handler );
+        signal( SIGUSR2, handler );
+        char buffer[5];
+        while( true )
+        {
+            int user_id;
+            int lock_status;
+            read( p2c[count][0], buffer, 5 );
+            if ( buffer[0] == 'A' )
+            {
+                read( p2c[count][0], buffer, 5 );
+                user_id = atoi( buffer );
+                locker.owned =  user_id;
+            }
+            else if ( buffer[0] == 'D')
+            {
+                locker.owned = -1;
+            }
+            else if ( buff[0] == 'U')
+            {
+                locker.locked = 0; 
+            }
+            else if ( buffer[0] == 'L')
+            {
+                locker.locked = 1;
+            }
+            else if ( buffer[0] == 'Q')
+            {
+                write( c2p[count][1], &locker.locked, 1);
+                write( c2p[count][1], &locker.owned, 1 );
+            }
+            else if ( buffer[0] == 'K')
+            {
+                quit = true;
+                close( p2c[count][0] );
+                close( p2c[count][1] );
+                close( c2p[count][0] );
+                close( c2p[count][1] );
+            }
+        }
+    }
+    else
+    {
+        proc[count] = pid;
+        printf("New Locker Created: %d\n", count);
+    }
+}
+
+void handler( int signo )
+{
+    sig = signo;
+    locker.locked = signo;
+}
+
+void delete()
+{
+    write( p2c[id][1], 'K', 1);
+    close( p2c[id][0] );
+    close( p2c[id][1] );
+    close( c2p[id][0] );
+    close( c2p[id][1] );
+    p2c[id] = NULL;
+    c2p[id] = NULL;
+}
+
+void query(int flag )
+{
+    if ( flag == 3 )
+    {
         
     }
     else
     {
-        proc[count++] = pid;
+
     }
-    
 }
