@@ -2,6 +2,8 @@
 #define LOCKER_H
 #include <stdint.h>
 
+typedef struct locker_t locker_t;
+typedef struct queue_t queue_t;
 struct locker_t {
   uint16_t id;
   uint16_t user_id;
