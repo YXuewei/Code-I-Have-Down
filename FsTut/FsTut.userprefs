@@ -1,0 +1,14 @@
+﻿<Properties StartupConfiguration="{15C2C523-39C5-4795-AA54-3C140DE1C89A}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="FsTut/Tutorial.fs">
+    <Files>
+      <File FileName="FsTut/Tutorial.fs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.FsTut PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+</Properties>
