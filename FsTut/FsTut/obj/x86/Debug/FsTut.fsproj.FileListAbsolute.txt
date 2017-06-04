@@ -1,0 +1,5 @@
+c:\Users\Xuewei Yang\code\FsTut\FsTut\bin\Debug\FsTut.exe
+c:\Users\Xuewei Yang\code\FsTut\FsTut\bin\Debug\FSharp.Core.dll
+c:\Users\Xuewei Yang\code\FsTut\FsTut\bin\Debug\System.ValueTuple.dll
+c:\Users\Xuewei Yang\code\FsTut\FsTut\bin\Debug\FSharp.Core.xml
+c:\Users\Xuewei Yang\code\FsTut\FsTut\obj\x86\Debug\FsTut.fsprojResolveAssemblyReference.cache
