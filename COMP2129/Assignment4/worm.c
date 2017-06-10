@@ -88,6 +88,13 @@ result_t* find_books_reprinted(book_t* nodes, size_t count, size_t publisher_id)
 		books[i] = find_books_publisher(nodes, count, id);
 		id = nodes[n].b_publisher_edges[i];
 	}
+	for ( int i = 0; i < n_publisher; i++ )
+	{
+		for ( int j = 0; j < books[i]->n_elements; j++ )
+		{
+			if ( books[i]->elements[j].id == )
+		}
+	}
 	return result;
 }
 
