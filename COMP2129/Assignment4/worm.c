@@ -77,24 +77,35 @@ result_t* find_books_reprinted(book_t* nodes, size_t count, size_t publisher_id)
 			break;
 		}
 	}
-
 	int number = 0;
-	result->elements = malloc ( sizeof(struct book_t) * (number + 1) );
-	size_t n_publisher = nodes[n].n_publisher_edges;
-	result_t *books[(int)n_publisher + 1];
-	int id = nodes[n].id;
-	for ( int i = 0; i < n_publisher; i++ )
+	int total = nodes[n].n_publisher_edges + 1;
+	size_t published[total];
+	int total = 10;
+	result->elements = malloc( sizeof( struct book_t) * total);
+
+	published[0] = nodes[n].publisher_id;
+	for ( int i = 0; i < nodes[n].n_publisher_edges; i++ )
 	{
-		books[i] = find_books_publisher(nodes, count, id);
-		id = nodes[n].b_publisher_edges[i];
+		published[i+1] = nodes[n].b_publisher_edges[i];
 	}
-	for ( int i = 0; i < n_publisher; i++ )
+	for ( int i = 0; i < total; i++ )
 	{
-		for ( int j = 0; j < books[i]->n_elements; j++ )
+		result_t* ids =find_books_id(nodes, count, nodes[ published[i] ] );
+		for ( int j = 0; j < ids->n_elements; j++ )
 		{
-			if ( books[i]->elements[j].id == )
-		}
+			if ( ids[j].publisher_id != publisher_id )
+			{
+				result->elements[number] = ids[j];
+				number++;
+				if ( number >= total )
+				{
+					total = total * 2;
+					result->elements = realloc( result->elements, total );
+				}
+			}
+		}	
 	}
+	result->n_elements = number;
 	return result;
 }
 
@@ -119,3 +130,25 @@ result_t* find_shortest_edge_type(book_t* nodes, size_t count, size_t a1_id, siz
 	return NULL;
 }
 
+result_t* find_books_id( book_t* nodes, size_t count, size_t id )
+{
+	result_t* result = malloc( sizeof(struct result_t ) );
+	int n = 0;	
+	int size = 10;
+	result->elements = malloc( sizeof (struct book_t) * 10 );
+	for ( int i = 0; i < count; i++ )
+	{
+		if( nodes[i].id == id )
+		{
+			result->elements[i] = nodes[i];
+			n++;
+			if ( n >= size )
+			{
+				size = size * 2;
+				result->elements = realloc( result->elements, size );
+			}
+		}
+	}
+	result->n_elements = n;
+	return result;
+}
