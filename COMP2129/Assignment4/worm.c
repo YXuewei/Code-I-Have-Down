@@ -67,8 +67,8 @@ result_t* find_books_reprinted(book_t* nodes, size_t count, size_t publisher_id)
 
 	result_t *result = malloc( sizeof( struct result_t) );
 	bool found =false;
-	int n;
-	for ( int i = 0; i < countl i++ )
+	int n = 0;
+	for ( int i = 0; i < count; i++ )
 	{
 		if ( nodes[i].publisher_id == publisher_id )
 		{
@@ -80,7 +80,7 @@ result_t* find_books_reprinted(book_t* nodes, size_t count, size_t publisher_id)
 	int number = 0;
 	int total = nodes[n].n_publisher_edges + 1;
 	size_t published[total];
-	int total = 10;
+	int size = 10;
 	result->elements = malloc( sizeof( struct book_t) * total);
 
 	published[0] = nodes[n].publisher_id;
@@ -90,20 +90,23 @@ result_t* find_books_reprinted(book_t* nodes, size_t count, size_t publisher_id)
 	}
 	for ( int i = 0; i < total; i++ )
 	{
-		result_t* ids =find_books_id(nodes, count, nodes[ published[i] ] );
+		result_t* ids =find_books_id(nodes, count, nodes[ published[i] ].id );
 		for ( int j = 0; j < ids->n_elements; j++ )
 		{
-			if ( ids[j].publisher_id != publisher_id )
+			//printf("n elements %zu", ids->n_elements);
+			if ( ids->elements[j]->publisher_id != publisher_id )
 			{
-				result->elements[number] = ids[j];
+				result->elements[number] = ids->elements[j];
 				number++;
-				if ( number >= total )
+				if ( number >= size )
 				{
-					total = total * 2;
+					size = size * 2;
 					result->elements = realloc( result->elements, total );
 				}
 			}
 		}	
+		free(ids->elements);
+		free(ids);
 	}
 	result->n_elements = number;
 	return result;
@@ -140,7 +143,7 @@ result_t* find_books_id( book_t* nodes, size_t count, size_t id )
 	{
 		if( nodes[i].id == id )
 		{
-			result->elements[i] = nodes[i];
+			result->elements[n] = &nodes[i];
 			n++;
 			if ( n >= size )
 			{

@@ -22,6 +22,7 @@ typedef struct result_t {
 	size_t n_elements;
 } result_t;
 
+result_t* find_books_id(book_t* nodes, size_t count, size_t id);
 result_t* find_book(book_t* nodes, size_t count, size_t book_id);
 result_t* find_books_by_author(book_t* nodes, size_t count, size_t author_id);
 result_t* find_books_reprinted(book_t* nodes, size_t count, size_t publisher_id);
