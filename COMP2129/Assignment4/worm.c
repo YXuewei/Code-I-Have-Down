@@ -83,7 +83,7 @@ result_t* find_books_reprinted(book_t* nodes, size_t count, size_t publisher_id)
 	int size = 10;
 	result->elements = malloc( sizeof( struct book_t) * total);
 
-	published[0] = nodes[n].publisher_id;
+	published[0] = n;
 	for ( int i = 0; i < nodes[n].n_publisher_edges; i++ )
 	{
 		published[i+1] = nodes[n].b_publisher_edges[i];
@@ -93,8 +93,8 @@ result_t* find_books_reprinted(book_t* nodes, size_t count, size_t publisher_id)
 		result_t* ids =find_books_id(nodes, count, nodes[ published[i] ].id );
 		for ( int j = 0; j < ids->n_elements; j++ )
 		{
-			//printf("n elements %zu", ids->n_elements);
-			if ( ids->elements[j]->publisher_id != publisher_id )
+			//printf("id is %zu n elements %zu pid for book %zu pid given %zu\n", ids->elements[j]->id, ids->n_elements,ids->elements[j]->publisher_id, publisher_id);
+			if ( ids->elements[j]->publisher_id != publisher_id)
 			{
 				result->elements[number] = ids->elements[j];
 				number++;
@@ -108,6 +108,7 @@ result_t* find_books_reprinted(book_t* nodes, size_t count, size_t publisher_id)
 		free(ids->elements);
 		free(ids);
 	}
+	//printf("%d",number);
 	result->n_elements = number;
 	return result;
 }
@@ -115,7 +116,11 @@ result_t* find_books_reprinted(book_t* nodes, size_t count, size_t publisher_id)
 // Returns result set containing books that are k distance from given book.
 result_t* find_books_k_distance(book_t* nodes, size_t count, size_t book_id, uint16_t k) {
 
-	// TODO
+	result_t *result = malloc( sizeof( struct result_t ) );
+	int size = 10;
+	result->elements = malloc( sizeof (struct book_t) * size );
+	int n = 0;
+		
 	return NULL;
 }
 
@@ -154,4 +159,16 @@ result_t* find_books_id( book_t* nodes, size_t count, size_t id )
 	}
 	result->n_elements = n;
 	return result;
+}
+
+size_t find_book_of_id( book_t*nodes, size_t count, size_t id )
+{
+	for( int i = 0; i < count; i++ )
+	{
+		if (nodes[i].id == id )
+		{
+			return i;
+		}
+	}
+	return 0;
 }
