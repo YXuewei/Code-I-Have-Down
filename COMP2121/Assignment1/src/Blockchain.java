@@ -45,7 +45,7 @@ public class Blockchain {
 			return 0;
 		}
 
-		if ( txString.matches("^tx|[a-z]{4}[0-9]{4}|.*(?|){0,70}") == false ){
+		if ( txString.matches("^tx|[a-z]{4}[0-9]{4}|.*{0,70}") == false ){
 			return 0;
 		}
 		
@@ -62,6 +62,9 @@ public class Blockchain {
 			String[] str = txString.split("|");
 			trans.setSender(str[1]);
 			trans.setContent(str[2]);
+			if(str[2].contains("|")){
+				return 0;
+			}
 			this.pool.add(trans);
 			return 1;
 		}

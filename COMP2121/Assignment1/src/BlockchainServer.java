@@ -45,7 +45,8 @@ public class BlockchainServer {
 			
 		while(true)
 		{
-			String line = input.readLine();
+			Blockchain bc = new Blockchain();	
+			//String line = input.readLine();
 		}
 	}
 
